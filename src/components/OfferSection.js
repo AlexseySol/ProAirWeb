@@ -1,10 +1,14 @@
+// OfferSection.js
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 
 const SectionContainer = styled.section`
   padding: 80px 20px;
-  background-color: #f8f9fa;
+  background: inherit;
+  background-size: inherit;
+  animation: inherit;
+  color: inherit;
 
   @media (max-width: 768px) {
     padding: 60px 15px;
@@ -20,6 +24,7 @@ const Content = styled.div`
 const Title = styled(motion.h2)`
   margin-bottom: 40px;
   font-size: 2.2em;
+  color: var(--primary-color);
 
   @media (max-width: 768px) {
     font-size: 1.8em;
@@ -34,11 +39,11 @@ const OfferList = styled.ul`
 `;
 
 const OfferItem = styled(motion.li)`
-  background-color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 20px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(138, 43, 226, 0.1);
   text-align: left;
 
   @media (max-width: 768px) {
@@ -49,6 +54,7 @@ const OfferItem = styled(motion.li)`
 const OfferIcon = styled.span`
   font-size: 24px;
   margin-right: 10px;
+  color: var(--secondary-color);
 
   @media (max-width: 768px) {
     font-size: 20px;
@@ -58,7 +64,7 @@ const OfferIcon = styled.span`
 const PriceTag = styled(motion.div)`
   font-size: 2em;
   font-weight: bold;
-  color: #007bff;
+  color: var(--secondary-color);
   margin-bottom: 20px;
 
   @media (max-width: 768px) {
@@ -69,11 +75,18 @@ const PriceTag = styled(motion.div)`
 const CTAButton = styled(motion.button)`
   padding: 15px 30px;
   font-size: 1.2em;
-  background-color: #007bff;
+  background-color: var(--primary-color);
   color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 4px 8px rgba(138, 43, 226, 0.3);
+  transition: background-color 0.3s, transform 0.3s;
+
+  &:hover {
+    background-color: var(--secondary-color);
+    transform: translateY(-5px);
+  }
 
   @media (max-width: 768px) {
     padding: 12px 24px;
