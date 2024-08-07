@@ -118,11 +118,11 @@ const CardContent = styled.div`
 // Стили для изображений
 const ImageWrapper = styled.div`
   width: 100%;
-  height: 200px;
+  padding-top: 75%; // Соотношение сторон 4:3
+  position: relative;
   overflow: hidden;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
-  position: relative;
 
   &::after {
     content: '';
@@ -136,6 +136,9 @@ const ImageWrapper = styled.div`
 `;
 
 const Image = styled.img`
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;

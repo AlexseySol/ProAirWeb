@@ -46,13 +46,13 @@ const ParticlesCanvas = styled.canvas`
 
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
-  visible: { 
-    opacity: 1, 
+  visible: {
+    opacity: 1,
     y: 0,
-    transition: { 
-      duration: 0.8, 
+    transition: {
+      duration: 0.8,
       ease: "easeOut"
-    } 
+    }
   }
 };
 
@@ -67,39 +67,48 @@ const App = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    const particleCount = 200;
+
     class Particle {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * 2 + 1;
+        this.baseSize = Math.random() * 2 + 1; // Base size
+        this.size = this.baseSize;
         this.speedX = Math.random() * 0.5 - 0.25;
         this.speedY = Math.random() * 0.5 - 0.25;
+        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
       }
 
       update() {
         this.x += this.speedX;
         this.y += this.speedY;
-        if (this.size > 0.2) this.size -= 0.01;
+
+        // Wrap around screen edges
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+
+        // Pulsating size with a minimum size to prevent negative values
+        this.size = Math.max(0.1, this.baseSize + Math.sin(Date.now() * 0.005) * 0.5);
       }
 
       draw() {
-        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.fillStyle = this.color;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
       }
     }
 
-    let particlesArray = Array(100).fill().map(() => new Particle());
+    let particlesArray = Array(particleCount).fill().map(() => new Particle());
 
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particlesArray.forEach((particle, index) => {
+      particlesArray.forEach((particle) => {
         particle.update();
         particle.draw();
-        if (particle.size <= 0.2) {
-          particlesArray[index] = new Particle();
-        }
       });
       animationFrameId = requestAnimationFrame(animate);
     };
@@ -120,7 +129,7 @@ const App = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {[HeroSection, ForWhomSection, AuthorSection, CourseContentSection, 
+        {[HeroSection, ForWhomSection, AuthorSection, CourseContentSection,
           ResultsSection, OfferSection, FAQSection, ReviewsSection].map((Section, index) => (
           <SectionWrapper
             key={index}

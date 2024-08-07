@@ -97,29 +97,42 @@ const NextButton = styled(CarouselButton)`
 // Стили для контейнера текстовых отзывов
 const TextReviewsContainer = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   margin-top: 60px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 // Анимация покачивания
 const wobble = keyframes`
   0% { transform: rotate(0deg); }
-  25% { transform: rotate(1deg); }
-  75% { transform: rotate(-1deg); }
+  25% { transform: rotate(0.5deg); }
+  75% { transform: rotate(-0.5deg); }
   100% { transform: rotate(0deg); }
 `;
 
 // Стили для флип-карточки
 const FlipCard = styled(motion.div)`
   perspective: 1000px;
-  height: 400px;
+  height: 0;
+  padding-bottom: 133.33%; // Соотношение сторон 3:4
   cursor: pointer;
   animation: ${wobble} 3s ease-in-out infinite;
+
+  @media (max-width: 768px) {
+    padding-bottom: 120%; // Немного уменьшаем высоту на маленьких экранах
+  }
 `;
 
 const FlipCardInner = styled(motion.div)`
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100%;
   text-align: center;
@@ -150,19 +163,29 @@ const CardBack = styled(CardSide)`
   padding: 20px;
 `;
 
-const ReviewerImage = styled.img`
+const ReviewerImage = styled.div`
   width: 100%;
-  height: 80%;
-  object-fit: cover;
+  height: 70%;
+  position: relative;
+  overflow: hidden;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 `;
 
 const ReviewerInfo = styled.div`
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
   background: rgba(0, 0, 0, 0.7);
-  padding: 10px;
+  padding: 15px;
+  height: 30%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const ReviewerName = styled.h4`
@@ -177,7 +200,7 @@ const ReviewerPosition = styled.p`
 `;
 
 const ReviewText = styled.p`
-  font-size: 1.1em;
+  font-size: 1em;
   color: var(--text-color);
   line-height: 1.5;
   overflow-y: auto;
@@ -199,7 +222,7 @@ const QuoteIcon = styled(FaQuoteLeft)`
   position: absolute;
   top: 10px;
   left: 10px;
-  font-size: 2em;
+  font-size: 1.5em;
   color: rgba(138, 43, 226, 0.2);
 `;
 
@@ -288,7 +311,9 @@ const ReviewsSection = () => {
                 transition={{ duration: 0.6 }}
               >
                 <CardFront>
-                  <ReviewerImage src={review.imageUrl} alt={review.name} />
+                  <ReviewerImage>
+                    <img src={review.imageUrl} alt={review.name} />
+                  </ReviewerImage>
                   <ReviewerInfo>
                     <ReviewerName>{review.name}</ReviewerName>
                     <ReviewerPosition>{review.position}</ReviewerPosition>
