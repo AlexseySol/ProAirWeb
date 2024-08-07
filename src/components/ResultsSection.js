@@ -1,46 +1,26 @@
-// ResultsSection.js
 import React from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaCheck } from 'react-icons/fa';
 
-// Анимация движения фона
-const moveBackground = keyframes`
-  0% { background-position: 0 0; }
-  100% { background-position: 100% 100%; }
-`;
+// Removed gradient animation keyframes as they're no longer needed
 
-// Стили для контейнера секции
+// Updated styles for the section container
 const SectionContainer = styled.section`
   padding: 100px 20px;
-  background: 
-    linear-gradient(135deg, rgba(138, 43, 226, 0.1) 25%, transparent 25%) -50px 0,
-    linear-gradient(225deg, rgba(138, 43, 226, 0.1) 25%, transparent 25%) -50px 0,
-    linear-gradient(315deg, rgba(138, 43, 226, 0.1) 25%, transparent 25%),
-    linear-gradient(45deg, rgba(138, 43, 226, 0.1) 25%, transparent 25%);
-  background-size: 100px 100px;
-  background-color: #000000;
-  animation: ${moveBackground} 20s linear infinite;
+  background: inherit;
+  background-size: inherit;
+  animation: inherit;
   color: inherit;
   position: relative;
   overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
-  }
 
   @media (max-width: 768px) {
     padding: 60px 15px;
   }
 `;
 
-// Стили для контента
+// Styles for content
 const Content = styled.div`
   max-width: 1000px;
   margin: 0 auto;
@@ -48,13 +28,12 @@ const Content = styled.div`
   z-index: 1;
 `;
 
-// Стили для заголовка
+// Styles for title
 const Title = styled(motion.h2)`
   text-align: center;
   margin-bottom: 60px;
   font-size: 2.5em;
-  color: #8A2BE2;
-  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+  color: var(--primary-color);
 
   @media (max-width: 768px) {
     font-size: 2em;
@@ -62,7 +41,7 @@ const Title = styled(motion.h2)`
   }
 `;
 
-// Стили для списка результатов
+// Styles for result list
 const ResultList = styled.ul`
   list-style-type: none;
   padding: 0;
@@ -71,44 +50,38 @@ const ResultList = styled.ul`
   gap: 30px;
 `;
 
-// Стили для элемента результата
+// Styles for result item
 const ResultItem = styled(motion.li)`
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
   padding: 25px;
-  box-shadow: 0 4px 15px rgba(138, 43, 226, 0.1);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
-  transition: all 0.3s ease;
-
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 20px rgba(138, 43, 226, 0.2);
-  }
 
   @media (max-width: 768px) {
     padding: 20px;
   }
 `;
 
-// Стили для иконки результата
+// Styles for result icon
 const ResultIcon = styled(motion.div)`
   width: 50px;
   height: 50px;
-  background-color: #4A90E2;
+  background-color: var(--secondary-color);
   border-radius: 50%;
   margin-bottom: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: white;
+  color: var(--background-color);
   font-size: 1.5em;
 `;
 
-// Стили для текста результата
+// Styles for result text
 const ResultText = styled.p`
   margin: 0;
   font-size: 1.1em;
-  color: #CCCCCC;
+  color: var(--text-color);
   line-height: 1.6;
 
   @media (max-width: 768px) {
@@ -116,7 +89,7 @@ const ResultText = styled.p`
   }
 `;
 
-// Список результатов на украинском языке с заменой "ШІ" на "AI"
+// List of results in Ukrainian
 const results = [
   "Легко розбиратися в інструментах штучного інтелекту",
   "Опанувати нову технічну професію",
@@ -126,20 +99,21 @@ const results = [
   "Автоматизувати частину процесів"
 ];
 
-// Анимационные варианты для элемента результата
+// Animation variants for result item
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { 
+  visible: (i) => ({ 
     opacity: 1, 
     y: 0,
     transition: { 
-      duration: 0.8,
+      delay: i * 0.1,
+      duration: 0.5,
       ease: "easeOut"
     }
-  }
+  })
 };
 
-// Анимационные варианты для иконки
+// Animation variants for icon
 const iconVariants = {
   hidden: { scale: 0 },
   visible: { 
@@ -152,7 +126,7 @@ const iconVariants = {
   }
 };
 
-// Компонент ResultsSection
+// ResultsSection component
 const ResultsSection = () => {
   return (
     <SectionContainer>
@@ -169,10 +143,12 @@ const ResultsSection = () => {
           {results.map((result, index) => (
             <ResultItem
               key={index}
+              custom={index}
               variants={itemVariants}
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true, amount: 0.3 }}
+              whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
             >
               <ResultIcon
                 variants={iconVariants}

@@ -1,25 +1,23 @@
-// ForWhomSection.js
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaLaptopCode, FaBusinessTime, FaUsers } from 'react-icons/fa';
 
-// Анимация пульсации для иконок
+// Анимация пульсации для изображений (более плавная)
 const pulse = keyframes`
   0% { transform: scale(1); }
-  50% { transform: scale(1.05); }
+  50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 `;
 
 // Стили для контейнера секции
 const SectionContainer = styled.section`
   padding: 100px 20px;
-  background: linear-gradient(135deg, #000000, #1a1a1a, #2c1f4a);
-  color: #ffffff;
+  background: inherit;
+  color: var(--text-color);
   overflow: hidden;
   position: relative;
 
-  // Эффект вращающегося фона
+  // Эффект вращающегося фона (более плавный)
   &::before {
     content: '';
     position: absolute;
@@ -27,8 +25,8 @@ const SectionContainer = styled.section`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(138, 43, 226, 0.1) 0%, rgba(138, 43, 226, 0) 70%);
-    animation: rotate 20s linear infinite;
+    background: radial-gradient(circle, rgba(138, 43, 226, 0.05) 0%, rgba(138, 43, 226, 0) 70%);
+    animation: rotate 30s linear infinite;
   }
 
   @keyframes rotate {
@@ -46,8 +44,9 @@ const Title = styled(motion.h2)`
   text-align: center;
   margin-bottom: 60px;
   font-size: 3em;
-  color: #8A2BE2;
-  text-shadow: 0 0 10px rgba(138, 43, 226, 0.5);
+  color: var(--primary-color);
+  text-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
+  font-family: 'Megrim', cursive;
 
   @media (max-width: 768px) {
     font-size: 2.2em;
@@ -59,7 +58,7 @@ const Title = styled(motion.h2)`
 const CardContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
   flex-wrap: wrap;
   max-width: 1200px;
   margin: 0 auto;
@@ -70,18 +69,19 @@ const CardContainer = styled.div`
 // Стили для карточек
 const Card = styled(motion.div)`
   width: 300px;
-  height: 400px;
   margin: 20px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   overflow: hidden;
   position: relative;
   transition: transform 0.3s, box-shadow 0.3s;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-10px);
-    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+    box-shadow: 0 10px 30px rgba(138, 43, 226, 0.2);
   }
 
   &::before {
@@ -91,7 +91,7 @@ const Card = styled(motion.div)`
     left: -50%;
     width: 200%;
     height: 200%;
-    background: radial-gradient(circle, rgba(74, 144, 226, 0.3) 0%, rgba(74, 144, 226, 0) 70%);
+    background: radial-gradient(circle, rgba(74, 144, 226, 0.1) 0%, rgba(74, 144, 226, 0) 70%);
     transform: rotate(45deg);
     z-index: -1;
   }
@@ -102,7 +102,6 @@ const Card = styled(motion.div)`
 
   @media (max-width: 768px) {
     width: 100%;
-    height: auto; /* Высота авто для лучшего отображения на мобильных */
     margin: 20px 0;
   }
 `;
@@ -113,18 +112,38 @@ const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100%;
+  flex-grow: 1;
 `;
 
-// Стили для иконок
-const IconWrapper = styled.div`
-  font-size: 4em;
-  color: #4A90E2;
-  margin-bottom: 20px;
-  animation: ${pulse} 2s infinite ease-in-out;
+// Стили для изображений
+const ImageWrapper = styled.div`
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  position: relative;
 
-  @media (max-width: 768px) {
-    font-size: 3em;
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(0,0,0,0.3) 100%);
+  }
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+  animation: ${pulse} 3s infinite ease-in-out;
+
+  ${Card}:hover & {
+    transform: scale(1.05);
   }
 `;
 
@@ -132,8 +151,9 @@ const IconWrapper = styled.div`
 const CardTitle = styled.h3`
   font-size: 1.6em;
   margin-bottom: 15px;
-  color: #8A2BE2;
-  text-shadow: 0 0 5px rgba(138, 43, 226, 0.3);
+  color: var(--primary-color);
+  text-shadow: 0 0 5px rgba(138, 43, 226, 0.2);
+  font-family: 'Megrim', cursive;
 
   @media (max-width: 768px) {
     font-size: 1.4em;
@@ -143,7 +163,7 @@ const CardTitle = styled.h3`
 // Описание карточки
 const CardDescription = styled.p`
   font-size: 1.1em;
-  color: #CCCCCC;
+  color: var(--text-color);
   line-height: 1.6;
 
   @media (max-width: 768px) {
@@ -181,10 +201,10 @@ const ForWhomSection = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
+          <ImageWrapper>
+            <Image src="/img/фриланс1.png" alt="Фрілансер" />
+          </ImageWrapper>
           <CardContent>
-            <IconWrapper>
-              <FaLaptopCode />
-            </IconWrapper>
             <div>
               <CardTitle>Фрілансерів</CardTitle>
               <CardDescription>
@@ -199,10 +219,10 @@ const ForWhomSection = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
+          <ImageWrapper>
+            <Image src="/img/предприниматель.png" alt="Підприємець" />
+          </ImageWrapper>
           <CardContent>
-            <IconWrapper>
-              <FaBusinessTime />
-            </IconWrapper>
             <div>
               <CardTitle>Підприємців</CardTitle>
               <CardDescription>
@@ -217,10 +237,10 @@ const ForWhomSection = () => {
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
         >
+          <ImageWrapper>
+            <Image src="/img/другое.png" alt="Зацікавлені" />
+          </ImageWrapper>
           <CardContent>
-            <IconWrapper>
-              <FaUsers />
-            </IconWrapper>
             <div>
               <CardTitle>Всіх зацікавлених</CardTitle>
               <CardDescription>

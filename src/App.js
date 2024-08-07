@@ -1,7 +1,7 @@
-// App.js
-import React from 'react';
-import styled, { createGlobalStyle, keyframes } from 'styled-components';
+import React, { useEffect, useRef } from 'react';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import GlobalStyle from './styles/GlobalStyles';
 import HeroSection from './components/HeroSection';
 import ForWhomSection from './components/ForWhomSection';
 import AuthorSection from './components/AuthorSection';
@@ -12,105 +12,22 @@ import FAQSection from './components/FAQSection';
 import ReviewsSection from './components/ReviewsSection';
 import Footer from './components/Footer';
 
-// Global gradient animation
-const gradientAnimation = keyframes`
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-`;
-
-// Global styles
-const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
-  
-  :root {
-    --primary-color: #8A2BE2; // Bright violet
-    --secondary-color: #4A90E2; // Blue
-    --background-color: #000000; // Black background
-    --text-color: #FFFFFF; // White text
-    --light-text-color: #CCCCCC; // Light gray text
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-
-  body {
-    font-family: 'Poppins', sans-serif;
-    line-height: 1.6;
-    font-size: 16px;
-    background: linear-gradient(270deg, #000000, #1a1a1a, #2c1f4a, #111111);
-    background-size: 400% 400%;
-    animation: ${gradientAnimation} 15s ease infinite;
-    color: var(--text-color);
-    overflow-x: hidden;
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    margin-bottom: 1rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--primary-color);
-  }
-
-  p {
-    margin-bottom: 1rem;
-    font-weight: 400;
-    color: var(--light-text-color);
-  }
-
-  a {
-    color: var(--primary-color);
-    text-decoration: none;
-    transition: color 0.3s;
-    &:hover {
-      color: var(--secondary-color);
-    }
-  }
-
-  button {
-    cursor: pointer;
-    font-family: inherit;
-    transition: background-color 0.3s, transform 0.3s;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    font-weight: 600;
-    &:hover {
-      background-color: var(--secondary-color);
-      transform: translateY(-2px);
-    }
-  }
-
-  @media (max-width: 768px) {
-    body {
-      font-size: 14px;
-    }
-  }
-`;
-
-// App container
 const AppContainer = styled(motion.div)`
   width: 100vw;
   position: relative;
   overflow: hidden;
 `;
 
-// Section wrapper
 const SectionWrapper = styled(motion.div)`
-  margin-bottom: 0px; /* Remove margin between sections */
-  padding: 80px 20px; /* Adjust padding for better spacing */
+  margin-bottom: 0px;
+  padding: 80px 20px;
   background: inherit;
   background-size: inherit;
   animation: inherit;
   color: inherit;
 
   &:first-child {
-    padding-top: 0; /* Remove top padding for the first section */
+    padding-top: 0;
   }
 
   @media (max-width: 768px) {
@@ -118,7 +35,15 @@ const SectionWrapper = styled(motion.div)`
   }
 `;
 
-// Section animation
+const ParticlesCanvas = styled.canvas`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+`;
+
 const sectionVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: { 
@@ -132,78 +57,81 @@ const sectionVariants = {
 };
 
 const App = () => {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 1;
+        this.speedX = Math.random() * 0.5 - 0.25;
+        this.speedY = Math.random() * 0.5 - 0.25;
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.size > 0.2) this.size -= 0.01;
+      }
+
+      draw() {
+        ctx.fillStyle = 'rgba(255,255,255,0.05)';
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    let particlesArray = Array(100).fill().map(() => new Particle());
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particlesArray.forEach((particle, index) => {
+        particle.update();
+        particle.draw();
+        if (particle.size <= 0.2) {
+          particlesArray[index] = new Particle();
+        }
+      });
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
   return (
     <>
       <GlobalStyle />
+      <ParticlesCanvas ref={canvasRef} />
       <AppContainer
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <HeroSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <ForWhomSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <AuthorSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <CourseContentSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <ResultsSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <OfferSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <FAQSection />
-        </SectionWrapper>
-        <SectionWrapper
-          variants={sectionVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          <ReviewsSection />
-        </SectionWrapper>
+        {[HeroSection, ForWhomSection, AuthorSection, CourseContentSection, 
+          ResultsSection, OfferSection, FAQSection, ReviewsSection].map((Section, index) => (
+          <SectionWrapper
+            key={index}
+            variants={sectionVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <Section />
+          </SectionWrapper>
+        ))}
         <Footer />
       </AppContainer>
     </>
