@@ -13,22 +13,24 @@ import ReviewsSection from './components/ReviewsSection';
 import Footer from './components/Footer';
 
 const AppContainer = styled(motion.div)`
-  width: 100vw;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+`;
+
+const MainContent = styled.main`
+  position: relative;
+  z-index: 1;
 `;
 
 const SectionWrapper = styled(motion.div)`
-  margin-bottom: 0px;
+  margin-bottom: 0;
   padding: 80px 20px;
   background: inherit;
   background-size: inherit;
   animation: inherit;
   color: inherit;
-
-  &:first-child {
-    padding-top: 0;
-  }
 
   @media (max-width: 768px) {
     padding: 60px 15px;
@@ -42,6 +44,7 @@ const ParticlesCanvas = styled.canvas`
   width: 100%;
   height: 100%;
   z-index: -1;
+  pointer-events: none;
 `;
 
 const sectionVariants = {
@@ -64,8 +67,13 @@ const App = () => {
     const ctx = canvas.getContext('2d');
     let animationFrameId;
 
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    const resizeCanvas = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
 
     const particleCount = 200;
 
@@ -73,7 +81,7 @@ const App = () => {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.baseSize = Math.random() * 2 + 1; // Base size
+        this.baseSize = Math.random() * 2 + 1;
         this.size = this.baseSize;
         this.speedX = Math.random() * 0.5 - 0.25;
         this.speedY = Math.random() * 0.5 - 0.25;
@@ -84,13 +92,11 @@ const App = () => {
         this.x += this.speedX;
         this.y += this.speedY;
 
-        // Wrap around screen edges
         if (this.x < 0) this.x = canvas.width;
         if (this.x > canvas.width) this.x = 0;
         if (this.y < 0) this.y = canvas.height;
         if (this.y > canvas.height) this.y = 0;
 
-        // Pulsating size with a minimum size to prevent negative values
         this.size = Math.max(0.1, this.baseSize + Math.sin(Date.now() * 0.005) * 0.5);
       }
 
@@ -117,6 +123,7 @@ const App = () => {
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', resizeCanvas);
     };
   }, []);
 
@@ -129,18 +136,21 @@ const App = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        {[HeroSection, ForWhomSection, AuthorSection, CourseContentSection,
-          ResultsSection, OfferSection, FAQSection, ReviewsSection].map((Section, index) => (
-          <SectionWrapper
-            key={index}
-            variants={sectionVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.3 }}
-          >
-            <Section />
-          </SectionWrapper>
-        ))}
+        <HeroSection />
+        <MainContent>
+          {[ForWhomSection, AuthorSection, CourseContentSection,
+            ResultsSection, OfferSection, FAQSection, ReviewsSection].map((Section, index) => (
+            <SectionWrapper
+              key={index}
+              variants={sectionVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+            >
+              <Section />
+            </SectionWrapper>
+          ))}
+        </MainContent>
         <Footer />
       </AppContainer>
     </>

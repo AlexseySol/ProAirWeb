@@ -1,83 +1,135 @@
-// Footer.js
 import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaPhone, FaEnvelope, FaMapMarkerAlt } from 'react-icons/fa';
 
-// Анимация для градиентного фона
 const gradientAnimation = keyframes`
   0% { background-position: 0% 50%; }
   50% { background-position: 100% 50%; }
   100% { background-position: 0% 50%; }
 `;
 
-// Styled container for the footer
 const FooterContainer = styled.footer`
-  background: linear-gradient(135deg, #1a1a1a, #2c2c2c, #1a1a1a);
+  background: linear-gradient(135deg, rgba(0, 119, 204, 0.1), rgba(0, 48, 80, 0.1));
   background-size: 400% 400%;
   animation: ${gradientAnimation} 15s ease infinite;
-  color: var(--light-text-color);
-  padding: 3rem 0;
-  font-family: 'Poppins', sans-serif;
-`;
+  color: var(--text-color);
+  padding: 4rem 2rem;
+  position: relative;
+  overflow: hidden;
 
-// Styled content wrapper
-const FooterContent = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-`;
+  @media (max-width: 768px) {
+    padding: 3rem 1rem;
+  }
 
-// Styled logo title
-const Logo = styled.h2`
-  color: var(--primary-color);
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  &:hover {
-    color: var(--secondary-color);
-    transition: color 0.3s;
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(0, 119, 204, 0.03) 0%, rgba(0, 119, 204, 0) 70%);
+    animation: rotate 30s linear infinite;
+  }
+
+  @keyframes rotate {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
   }
 `;
 
-// Styled copyright text
-const Copyright = styled.p`
-  margin-bottom: 1rem;
+const FooterContent = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  position: relative;
+  z-index: 1;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
-// Styled contact info section
-const ContactInfo = styled.div`
-  margin-bottom: 1rem;
-`;
-
-// Styled link section
-const LinkSection = styled.div`
+const FooterSection = styled.div`
   display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const LogoContainer = styled.div`
+  display: flex;
+  align-items: center;
   gap: 1rem;
   margin-bottom: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
 `;
 
-// Styled link with motion effects
+const LogoWrapper = styled.div`
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+  box-shadow: 0 0 10px rgba(0, 119, 204, 0.3);
+`;
+
+const LogoImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+const CompanyName = styled.h2`
+  color: var(--primary-color);
+  font-size: 2.5rem;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  letter-spacing: 1px;
+
+  @media (max-width: 768px) {
+    font-size: 2rem;
+  }
+`;
+
+const FooterText = styled.p`
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8);
+`;
+
+const SectionTitle = styled.h4`
+  color: var(--primary-color);
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+`;
+
+const LinkSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+`;
+
 const Link = styled(motion.a)`
-  color: var(--secondary-color);
+  color: rgba(255, 255, 255, 0.8);
   text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
   &:hover {
-    text-decoration: underline;
     color: var(--primary-color);
   }
 `;
 
-// Styled address text
-const Address = styled.p`
-  max-width: 300px;
-  margin-top: 1rem;
-`;
-
-// Social media icon section
 const SocialMediaSection = styled.div`
   display: flex;
   gap: 1rem;
@@ -85,12 +137,13 @@ const SocialMediaSection = styled.div`
 `;
 
 const SocialIcon = styled(motion.a)`
-  color: var(--light-text-color);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 1.5rem;
-  transition: color 0.3s;
+  transition: color 0.3s, transform 0.3s;
 
   &:hover {
     color: var(--primary-color);
+    transform: translateY(-3px);
   }
 `;
 
@@ -98,84 +151,50 @@ const Footer = () => {
   return (
     <FooterContainer>
       <FooterContent>
-        <Logo>ProAir</Logo>
-        <Copyright>&copy; 2024 ProAir. All Rights Reserved.</Copyright>
-        <ContactInfo>
-          <p>Contact Us: 123-456-7890</p>
-          <p>Email: support@proair.com</p>
-        </ContactInfo>
-        <LinkSection>
-          <Link 
-            href="/privacy" 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Privacy Policy
-          </Link>
-          <Link 
-            href="/terms" 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Terms of Service
-          </Link>
-          <Link 
-            href="/careers" 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Careers
-          </Link>
-          <Link 
-            href="/contact" 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Contact
-          </Link>
-          <Link 
-            href="/about" 
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            About Us
-          </Link>
-        </LinkSection>
-        <SocialMediaSection>
-          <SocialIcon 
-            href="https://facebook.com"
-            target="_blank"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <FaFacebook />
-          </SocialIcon>
-          <SocialIcon 
-            href="https://twitter.com"
-            target="_blank"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <FaTwitter />
-          </SocialIcon>
-          <SocialIcon 
-            href="https://instagram.com"
-            target="_blank"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <FaInstagram />
-          </SocialIcon>
-          <SocialIcon 
-            href="https://linkedin.com"
-            target="_blank"
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
-          >
-            <FaLinkedin />
-          </SocialIcon>
-        </SocialMediaSection>
-        <Address>Headquarters: 123 Airway Ave, Miami, FL 33130</Address>
+        <FooterSection>
+          <LogoContainer>
+            <LogoWrapper>
+              <LogoImage src="/img/proair-logo.png" alt="ProAir Logo" />
+            </LogoWrapper>
+            <CompanyName>ProAir</CompanyName>
+          </LogoContainer>
+          <FooterText>Інноваційні рішення для авіаційної галузі</FooterText>
+          <FooterText>&copy; 2024 ProAir. Усі права захищені.</FooterText>
+        </FooterSection>
+        <FooterSection>
+          <SectionTitle>Контакти</SectionTitle>
+          <Link href="tel:+380441234567"><FaPhone /> +380 44 123 4567</Link>
+          <Link href="mailto:info@proair.com"><FaEnvelope /> info@proair.com</Link>
+          <Link href="#"><FaMapMarkerAlt /> вул. Авіаційна, 1, Київ, 03058</Link>
+        </FooterSection>
+        <FooterSection>
+          <SectionTitle>Швидкі посилання</SectionTitle>
+          <LinkSection>
+            <Link href="/about" whileHover={{ x: 5 }}>Про нас</Link>
+            <Link href="/services" whileHover={{ x: 5 }}>Послуги</Link>
+            <Link href="/products" whileHover={{ x: 5 }}>Продукти</Link>
+            <Link href="/careers" whileHover={{ x: 5 }}>Кар'єра</Link>
+            <Link href="/contact" whileHover={{ x: 5 }}>Контакти</Link>
+          </LinkSection>
+        </FooterSection>
+        <FooterSection>
+          <SectionTitle>Слідкуйте за нами</SectionTitle>
+          <SocialMediaSection>
+            <SocialIcon href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+              <FaFacebook />
+            </SocialIcon>
+            <SocialIcon href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+              <FaTwitter />
+            </SocialIcon>
+            <SocialIcon href="https://instagram.com" target="_blank" rel="noopener noreferrer">
+              <FaInstagram />
+            </SocialIcon>
+            <SocialIcon href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+              <FaLinkedin />
+            </SocialIcon>
+          </SocialMediaSection>
+          <FooterText>Приєднуйтесь до нас у соціальних мережах для отримання останніх новин та оновлень!</FooterText>
+        </FooterSection>
       </FooterContent>
     </FooterContainer>
   );

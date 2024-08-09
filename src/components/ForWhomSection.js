@@ -2,14 +2,12 @@ import React from 'react';
 import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 
-// Анимация пульсации для изображений (более плавная)
 const pulse = keyframes`
   0% { transform: scale(1); }
   50% { transform: scale(1.03); }
   100% { transform: scale(1); }
 `;
 
-// Стили для контейнера секции
 const SectionContainer = styled.section`
   padding: 100px 20px;
   background: inherit;
@@ -17,7 +15,6 @@ const SectionContainer = styled.section`
   overflow: hidden;
   position: relative;
 
-  // Эффект вращающегося фона (более плавный)
   &::before {
     content: '';
     position: absolute;
@@ -39,14 +36,12 @@ const SectionContainer = styled.section`
   }
 `;
 
-// Стили для заголовка
 const Title = styled(motion.h2)`
   text-align: center;
   margin-bottom: 60px;
   font-size: 3em;
   color: var(--primary-color);
   text-shadow: 0 0 10px rgba(138, 43, 226, 0.3);
-  font-family: 'Megrim', cursive;
 
   @media (max-width: 768px) {
     font-size: 2.2em;
@@ -54,7 +49,6 @@ const Title = styled(motion.h2)`
   }
 `;
 
-// Контейнер для карточек
 const CardContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -66,7 +60,6 @@ const CardContainer = styled.div`
   z-index: 1;
 `;
 
-// Стили для карточек
 const Card = styled(motion.div)`
   width: 300px;
   margin: 20px;
@@ -106,7 +99,6 @@ const Card = styled(motion.div)`
   }
 `;
 
-// Контент внутри карточек
 const CardContent = styled.div`
   padding: 30px;
   display: flex;
@@ -115,10 +107,9 @@ const CardContent = styled.div`
   flex-grow: 1;
 `;
 
-// Стили для изображений
 const ImageWrapper = styled.div`
   width: 100%;
-  padding-top: 75%; // Соотношение сторон 4:3
+  padding-top: 75%;
   position: relative;
   overflow: hidden;
   border-top-left-radius: 20px;
@@ -150,20 +141,17 @@ const Image = styled.img`
   }
 `;
 
-// Заголовок карточки
 const CardTitle = styled.h3`
   font-size: 1.6em;
   margin-bottom: 15px;
   color: var(--primary-color);
   text-shadow: 0 0 5px rgba(138, 43, 226, 0.2);
-  font-family: 'Megrim', cursive;
 
   @media (max-width: 768px) {
     font-size: 1.4em;
   }
 `;
 
-// Описание карточки
 const CardDescription = styled.p`
   font-size: 1.1em;
   color: var(--text-color);
@@ -174,7 +162,6 @@ const CardDescription = styled.p`
   }
 `;
 
-// Анимационные варианты для карточек
 const cardVariants = {
   hidden: { opacity: 0, y: 50 },
   visible: { 

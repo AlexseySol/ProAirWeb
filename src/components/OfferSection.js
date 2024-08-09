@@ -1,6 +1,5 @@
-// OfferSection.js
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 
 const SectionContainer = styled.section`
@@ -61,15 +60,47 @@ const OfferIcon = styled.span`
   }
 `;
 
+const pulse = keyframes`
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.4);
+  }
+  70% {
+    transform: scale(1.05);
+    box-shadow: 0 0 0 10px rgba(138, 43, 226, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(138, 43, 226, 0);
+  }
+`;
+
 const PriceTag = styled(motion.div)`
   font-size: 2em;
   font-weight: bold;
   color: var(--secondary-color);
   margin-bottom: 20px;
+  display: inline-block;
+  padding: 10px 20px;
+  border-radius: 15px;
+  background: rgba(138, 43, 226, 0.1);
+  animation: ${pulse} 2s infinite;
 
   @media (max-width: 768px) {
     font-size: 1.6em;
   }
+`;
+
+const StrikethroughPrice = styled.span`
+  text-decoration: line-through;
+  color: #888;
+  font-size: 0.8em;
+  margin-left: 10px;
+`;
+
+const HighlightedPrice = styled.span`
+  color: #ff6b6b;
+  font-weight: bold;
 `;
 
 const CTAButton = styled(motion.button)`
@@ -131,7 +162,7 @@ const OfferSection = () => {
           transition={{ duration: 0.5 }}
           viewport={{ once: true, amount: 0.3 }}
         >
-          Спеціальна пропозиція: 29$ замість 105$
+          Спеціальна пропозиція: <HighlightedPrice>29$</HighlightedPrice> <StrikethroughPrice>105$</StrikethroughPrice>
         </PriceTag>
         <CTAButton
           whileHover={{ scale: 1.05 }}

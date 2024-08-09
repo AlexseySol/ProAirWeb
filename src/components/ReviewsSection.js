@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaChevronLeft, FaChevronRight, FaQuoteLeft } from 'react-icons/fa';
 
-// Стили для контейнера секции
 const SectionContainer = styled.section`
   padding: 80px 20px;
   background: inherit;
@@ -14,7 +13,6 @@ const SectionContainer = styled.section`
   }
 `;
 
-// Стили для заголовка
 const Title = styled(motion.h2)`
   text-align: center;
   margin-bottom: 40px;
@@ -27,19 +25,16 @@ const Title = styled(motion.h2)`
   }
 `;
 
-// Стили для контейнера отзывов
 const ReviewsContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
 `;
 
-// Стили для видео-карусели
 const VideoCarousel = styled.div`
   position: relative;
   margin-bottom: 40px;
 `;
 
-// Стили для обертки видео
 const VideoWrapper = styled(motion.div)`
   position: relative;
   padding-bottom: 56.25%; /* 16:9 */
@@ -49,7 +44,6 @@ const VideoWrapper = styled(motion.div)`
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 `;
 
-// Стили для видео
 const Video = styled.iframe`
   position: absolute;
   top: 0;
@@ -59,7 +53,6 @@ const Video = styled.iframe`
   border: none;
 `;
 
-// Стили для кнопок управления каруселью
 const CarouselButton = styled.button`
   position: absolute;
   top: 50%;
@@ -94,7 +87,6 @@ const NextButton = styled(CarouselButton)`
   right: 10px;
 `;
 
-// Стили для контейнера текстовых отзывов
 const TextReviewsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -110,21 +102,11 @@ const TextReviewsContainer = styled.div`
   }
 `;
 
-// Анимация покачивания
-const wobble = keyframes`
-  0% { transform: rotate(0deg); }
-  25% { transform: rotate(0.5deg); }
-  75% { transform: rotate(-0.5deg); }
-  100% { transform: rotate(0deg); }
-`;
-
-// Стили для флип-карточки
 const FlipCard = styled(motion.div)`
   perspective: 1000px;
   height: 0;
   padding-bottom: 133.33%; // Соотношение сторон 3:4
   cursor: pointer;
-  animation: ${wobble} 3s ease-in-out infinite;
 
   @media (max-width: 768px) {
     padding-bottom: 120%; // Немного уменьшаем высоту на маленьких экранах
@@ -217,7 +199,6 @@ const ReviewText = styled.p`
   }
 `;
 
-// Стили для иконки цитаты
 const QuoteIcon = styled(FaQuoteLeft)`
   position: absolute;
   top: 10px;
@@ -226,7 +207,6 @@ const QuoteIcon = styled(FaQuoteLeft)`
   color: rgba(138, 43, 226, 0.2);
 `;
 
-// Массив отзывов
 const reviews = [
   {
     videoUrl: "https://www.youtube.com/embed/sampleVideoID1",
@@ -258,7 +238,6 @@ const reviews = [
   }
 ];
 
-// Компонент ReviewsSection
 const ReviewsSection = () => {
   const [currentVideo, setCurrentVideo] = useState(0);
   const [flippedCards, setFlippedCards] = useState({});
@@ -273,6 +252,28 @@ const ReviewsSection = () => {
 
   const toggleCard = (index) => {
     setFlippedCards(prev => ({ ...prev, [index]: !prev[index] }));
+  };
+
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { 
+        type: "spring",
+        stiffness: 100,
+        damping: 15
+      }
+    },
+    hover: {
+      scale: 1.05,
+      boxShadow: "0px 5px 20px rgba(138, 43, 226, 0.2)",
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 10
+      }
+    }
   };
 
   return (
@@ -305,7 +306,15 @@ const ReviewsSection = () => {
         </VideoCarousel>
         <TextReviewsContainer>
           {reviews.map((review, index) => (
-            <FlipCard key={index} onClick={() => toggleCard(index)}>
+            <FlipCard 
+              key={index} 
+              onClick={() => toggleCard(index)}
+              variants={cardVariants}
+              initial="hidden"
+              animate="visible"
+              whileHover="hover"
+              whileTap={{ scale: 0.95 }}
+            >
               <FlipCardInner
                 animate={{ rotateY: flippedCards[index] ? 180 : 0 }}
                 transition={{ duration: 0.6 }}
