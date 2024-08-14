@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { FaChevronLeft, FaChevronRight, FaQuoteLeft } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
-  padding: 80px 20px;
+  padding: 30px 20px;
   background: inherit;
   color: inherit;
 

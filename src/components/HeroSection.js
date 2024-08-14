@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
+import Header from './Header';
 
 const BackgroundImage = styled.div`
   position: absolute;
@@ -27,44 +28,10 @@ const SectionContainer = styled.section`
   align-items: center;
   min-height: 100vh;
   width: 100%;
-  padding: 2rem 0;
+  padding: 6rem 0 2rem 0; /* Added top padding to avoid overlap with header */
   color: var(--text-color);
   position: relative;
   overflow: hidden;
-`;
-
-const LogoContainer = styled(motion.div)`
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 60px;
-  height: 60px;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  transition: transform 0.3s, box-shadow 0.3s;
-
-  &:hover {
-    transform: scale(1.1);
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  @media (max-width: 768px) {
-    top: 10px;
-    left: 10px;
-    width: 50px;
-    height: 50px;
-  }
-`;
-
-const Logo = styled(motion.img)`
-  width: 80%;
-  height: 80%;
-  border-radius: 50%;
 `;
 
 const ContentWrapper = styled.div`
@@ -74,12 +41,11 @@ const ContentWrapper = styled.div`
   width: 100%;
   max-width: 1600px;
   margin: 0 auto;
-  padding: 80px 2rem 0;
+  padding: 0px 2rem 0;
 
   @media (max-width: 1200px) {
     flex-direction: column;
     align-items: center;
-    padding-top: 100px;
   }
 `;
 
@@ -188,66 +154,56 @@ const Video = styled.iframe`
 
 const HeroSection = () => {
   return (
-    <SectionContainer>
-      <BackgroundImage />
-      <LogoContainer
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <Logo
-          src="/img/proair-logo.png"
-          alt="Logo"
-          initial={{ rotate: 0 }}
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, loop: Infinity, ease: "linear" }}
-        />
-      </LogoContainer>
-      <ContentWrapper>
-        <TextContainer>
-          <Title
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            Стань експертом в AI та заробляй на цьому
-          </Title>
-          <Subtitle
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-          >
-            Опануйте 5 найпотужніших AI-інструментів і дізнайтеся, як заробляти від
-            $1000/міс на 7-денному курсі від експерта з Кремнієвої долини.
-          </Subtitle>
-          <Bonus
-            initial={{ opacity: 0, y: -30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-          >
-            Придбайте курс сьогодні та отримайте бонус: "Топ 20 AI-інструментів для
-            заробітку"
-          </Bonus>
-          <CTAButton
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-          >
-            Приєднатися до курсу
-          </CTAButton>
-        </TextContainer>
-        <VideoContainer>
-          <Video
-            src="https://www.youtube.com/embed/your-video-id"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            title="Вступне відео"
-          />
-        </VideoContainer>
-      </ContentWrapper>
-    </SectionContainer>
+    <>
+      <Header />
+      <SectionContainer>
+        <BackgroundImage />
+        <ContentWrapper>
+          <TextContainer>
+            <Title
+              initial={{ opacity: 0, y: -50 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8 }}
+            >
+              Стань експертом в AI та заробляй на цьому
+            </Title>
+            <Subtitle
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Опануйте 5 найпотужніших AI-інструментів і дізнайтеся, як заробляти від
+              $1000/міс на 7-денному курсі від експерта з Кремнієвої долини.
+            </Subtitle>
+            <Bonus
+              initial={{ opacity: 0, y: -30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Придбайте курс сьогодні та отримайте бонус: "Топ 20 AI-інструментів для
+              заробітку"
+            </Bonus>
+            <CTAButton
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+            >
+              Приєднатися до курсу
+            </CTAButton>
+          </TextContainer>
+          <VideoContainer>
+            <Video
+              src="https://www.youtube.com/embed/your-video-id"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              title="Вступне відео"
+            />
+          </VideoContainer>
+        </ContentWrapper>
+      </SectionContainer>
+    </>
   );
 };
 

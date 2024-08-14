@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
-  padding: 80px 20px;
+  padding: 30px 20px;
 
   @media (max-width: 768px) {
     padding: 60px 15px;

@@ -3,7 +3,7 @@ import styled, { keyframes } from 'styled-components';
 import { motion } from 'framer-motion';
 
 const SectionContainer = styled.section`
-  padding: 80px 20px;
+  padding: 30px 20px;
   background: inherit;
   background-size: inherit;
   animation: inherit;

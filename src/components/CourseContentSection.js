@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { FaRobot, FaComments, FaImages, FaPen, FaUserCircle, FaTable, FaVideo, FaDollarSign } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
-  padding: 80px 20px;
+  padding: 30px 20px;
   background: inherit;
   background-size: inherit;
   animation: inherit;

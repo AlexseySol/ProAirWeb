@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaUserGraduate, FaBrain, FaCertificate, FaChalkboardTeacher } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
-  padding: 80px 20px;
+  padding: 30px 20px;
   background: inherit;  /* Вернем фон в исходное состояние */
   background-size: inherit;
   animation: inherit;

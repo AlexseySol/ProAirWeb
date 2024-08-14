@@ -7,7 +7,7 @@ import { FaCheck } from 'react-icons/fa';
 
 // Updated styles for the section container
 const SectionContainer = styled.section`
-  padding: 100px 20px;
+  padding: 30px 20px;
   background: inherit;
   background-size: inherit;
   animation: inherit;

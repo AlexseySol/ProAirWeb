@@ -9,7 +9,7 @@ const pulse = keyframes`
 `;
 
 const SectionContainer = styled.section`
-  padding: 100px 20px;
+  padding: 30px 20px;
   background: inherit;
   color: var(--text-color);
   overflow: hidden;
@@ -32,7 +32,7 @@ const SectionContainer = styled.section`
   }
 
   @media (max-width: 768px) {
-    padding: 60px 15px;
+    padding: 30px 15px;
   }
 `;
 

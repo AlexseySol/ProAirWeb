@@ -10,7 +10,6 @@ import ResultsSection from './components/ResultsSection';
 import OfferSection from './components/OfferSection';
 import FAQSection from './components/FAQSection';
 import ReviewsSection from './components/ReviewsSection';
-import Footer from './components/Footer';
 
 const AppContainer = styled(motion.div)`
   width: 100%;
@@ -24,17 +23,8 @@ const MainContent = styled.main`
   z-index: 1;
 `;
 
-const SectionWrapper = styled(motion.div)`
-  margin-bottom: 0;
-  padding: 80px 20px;
-  background: inherit;
-  background-size: inherit;
-  animation: inherit;
-  color: inherit;
-
-  @media (max-width: 768px) {
-    padding: 60px 15px;
-  }
+const Section = styled.section`
+  width: 100%;
 `;
 
 const ParticlesCanvas = styled.canvas`
@@ -46,18 +36,6 @@ const ParticlesCanvas = styled.canvas`
   z-index: -1;
   pointer-events: none;
 `;
-
-const sectionVariants = {
-  hidden: { opacity: 0, y: 50 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.8,
-      ease: "easeOut"
-    }
-  }
-};
 
 const App = () => {
   const canvasRef = useRef(null);
@@ -75,17 +53,17 @@ const App = () => {
     resizeCanvas();
     window.addEventListener('resize', resizeCanvas);
 
-    const particleCount = 200;
+    const particleCount = 100;
 
     class Particle {
       constructor() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.baseSize = Math.random() * 2 + 1;
+        this.baseSize = Math.random() * 1 + 0.5;
         this.size = this.baseSize;
-        this.speedX = Math.random() * 0.5 - 0.25;
-        this.speedY = Math.random() * 0.5 - 0.25;
-        this.color = `rgba(255, 255, 255, ${Math.random() * 0.5 + 0.5})`;
+        this.speedX = Math.random() * 0.2 - 0.1;
+        this.speedY = Math.random() * 0.2 - 0.1;
+        this.color = `rgba(255, 255, 255, ${Math.random() * 0.3 + 0.1})`;
       }
 
       update() {
@@ -97,7 +75,7 @@ const App = () => {
         if (this.y < 0) this.y = canvas.height;
         if (this.y > canvas.height) this.y = 0;
 
-        this.size = Math.max(0.1, this.baseSize + Math.sin(Date.now() * 0.005) * 0.5);
+        this.size = Math.max(0.1, this.baseSize + Math.sin(Date.now() * 0.003) * 0.2);
       }
 
       draw() {
@@ -111,7 +89,8 @@ const App = () => {
     let particlesArray = Array(particleCount).fill().map(() => new Particle());
 
     const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
       particlesArray.forEach((particle) => {
         particle.update();
         particle.draw();
@@ -136,22 +115,16 @@ const App = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <HeroSection />
         <MainContent>
-          {[ForWhomSection, AuthorSection, CourseContentSection,
-            ResultsSection, OfferSection, FAQSection, ReviewsSection].map((Section, index) => (
-            <SectionWrapper
-              key={index}
-              variants={sectionVariants}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-            >
-              <Section />
-            </SectionWrapper>
-          ))}
+          <Section id="HeroSection"><HeroSection /></Section>
+          <Section id="ForWhomSection"><ForWhomSection /></Section>
+          <Section id="AuthorSection"><AuthorSection /></Section>
+          <Section id="CourseContentSection"><CourseContentSection /></Section>
+          <Section id="ResultsSection"><ResultsSection /></Section>
+          <Section id="OfferSection"><OfferSection /></Section>
+          <Section id="FAQSection"><FAQSection /></Section>
+          <Section id="ReviewsSection"><ReviewsSection /></Section>
         </MainContent>
-        <Footer />
       </AppContainer>
     </>
   );
