@@ -267,6 +267,7 @@ const HeroSection = () => {
                 playsInline
                 onCanPlay={handleVideoPlay}
                 onError={handleVideoError}
+                controls  // Added controls attribute to give users manual control
               >
                 <source src="/img/your-video-file.MP4" type="video/mp4" />
                 Your browser does not support the video tag.
