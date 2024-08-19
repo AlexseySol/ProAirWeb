@@ -1,8 +1,6 @@
-// AuthorSection.js
 import React from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaLinkedin, FaTwitter, FaInstagram } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
   padding: 30px 20px;
@@ -110,31 +108,37 @@ const Highlight = styled(motion.div)`
   border-radius: 12px;
   box-shadow: 0 4px 15px rgba(138, 43, 226, 0.2);
   transition: transform 0.3s, box-shadow 0.3s;
+  position: relative;
+  font-family: 'Georgia', serif;
+  font-style: italic;
 
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 20px rgba(138, 43, 226, 0.3);
   }
 
+  &::before,
+  &::after {
+    content: '"';
+    font-size: 3em;
+    color: rgba(138, 43, 226, 0.5);
+    position: absolute;
+    font-family: 'Times New Roman', serif;
+  }
+
+  &::before {
+    top: -10px;
+    left: 5px;
+  }
+
+  &::after {
+    bottom: -30px;
+    right: 5px;
+  }
+
   @media (max-width: 768px) {
     width: 80%;
     margin-bottom: 15px;
-  }
-`;
-
-const SocialLinks = styled.div`
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-  margin-top: 20px;
-`;
-
-const SocialIcon = styled(motion.a)`
-  font-size: 24px;
-  transition: color 0.3s;
-
-  &:hover {
-    color: var(--primary-color);
   }
 `;
 
@@ -145,23 +149,25 @@ const Quote = styled(motion.blockquote)`
   margin-top: 30px;
   padding: 0 20px;
   position: relative;
+  font-family: 'Georgia', serif;
 
   &::before,
   &::after {
     content: '"';
-    font-size: 3em;
-    color: rgba(138, 43, 226, 0.3);
+    font-size: 4em;
+    color: rgba(138, 43, 226, 0.5);
     position: absolute;
+    font-family: 'Times New Roman', serif;
   }
 
   &::before {
-    top: -20px;
-    left: -10px;
+    top: -30px;
+    left: -15px;
   }
 
   &::after {
-    bottom: -40px;
-    right: -10px;
+    bottom: -50px;
+    right: -15px;
   }
 `;
 
@@ -198,32 +204,6 @@ const AuthorSection = () => {
               мета - допомогти іншим опанувати AI та використовувати його для
               досягнення успіху.
             </AuthorBio>
-            <SocialLinks>
-              <SocialIcon
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-              >
-                <FaLinkedin />
-              </SocialIcon>
-              <SocialIcon
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-              >
-                <FaTwitter />
-              </SocialIcon>
-              <SocialIcon
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
-                whileHover={{ scale: 1.1 }}
-              >
-                <FaInstagram />
-              </SocialIcon>
-            </SocialLinks>
           </AuthorText>
         </AuthorInfo>
         <HighlightContainer>
@@ -249,8 +229,8 @@ const AuthorSection = () => {
           transition={{ duration: 0.8, delay: 1.2 }}
           viewport={{ once: true, amount: 0.3 }}
         >
-          "AI - це не заміна людського розуму, а його розширення.
-          Разом ми можемо досягти неймовірних висот."
+          AI - це не заміна людського розуму, а його розширення.
+          Разом ми можемо досягти неймовірних висот.
         </Quote>
       </Content>
     </SectionContainer>

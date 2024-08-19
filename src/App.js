@@ -120,10 +120,10 @@ const App = () => {
           <Section id="ForWhomSection"><ForWhomSection /></Section>
           <Section id="AuthorSection"><AuthorSection /></Section>
           <Section id="CourseContentSection"><CourseContentSection /></Section>
+          <Section id="ReviewsSection"><ReviewsSection /></Section>
           <Section id="ResultsSection"><ResultsSection /></Section>
           <Section id="OfferSection"><OfferSection /></Section>
           <Section id="FAQSection"><FAQSection /></Section>
-          <Section id="ReviewsSection"><ReviewsSection /></Section>
         </MainContent>
       </AppContainer>
     </>

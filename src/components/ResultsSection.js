@@ -3,9 +3,6 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { FaCheck } from 'react-icons/fa';
 
-// Removed gradient animation keyframes as they're no longer needed
-
-// Updated styles for the section container
 const SectionContainer = styled.section`
   padding: 30px 20px;
   background: inherit;
@@ -20,7 +17,6 @@ const SectionContainer = styled.section`
   }
 `;
 
-// Styles for content
 const Content = styled.div`
   max-width: 1000px;
   margin: 0 auto;
@@ -28,7 +24,6 @@ const Content = styled.div`
   z-index: 1;
 `;
 
-// Styles for title
 const Title = styled(motion.h2)`
   text-align: center;
   margin-bottom: 60px;
@@ -41,7 +36,6 @@ const Title = styled(motion.h2)`
   }
 `;
 
-// Styles for result list
 const ResultList = styled.ul`
   list-style-type: none;
   padding: 0;
@@ -50,38 +44,41 @@ const ResultList = styled.ul`
   gap: 30px;
 `;
 
-// Styles for result item
 const ResultItem = styled(motion.li)`
   background: rgba(255, 255, 255, 0.05);
   border-radius: 15px;
-  padding: 25px;
+  overflow: hidden;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
-
-  @media (max-width: 768px) {
-    padding: 20px;
-  }
+  position: relative;
+  height: 300px;
+  cursor: pointer;
 `;
 
-// Styles for result icon
-const ResultIcon = styled(motion.div)`
-  width: 50px;
-  height: 50px;
-  background-color: var(--secondary-color);
-  border-radius: 50%;
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: var(--background-color);
-  font-size: 1.5em;
+const ResultImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
 `;
 
-// Styles for result text
+const ResultContent = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  z-index: 2;
+`;
+
 const ResultText = styled.p`
   margin: 0;
   font-size: 1.1em;
-  color: var(--text-color);
   line-height: 1.6;
 
   @media (max-width: 768px) {
@@ -89,7 +86,22 @@ const ResultText = styled.p`
   }
 `;
 
-// List of results in Ukrainian
+const CheckCircle = styled(motion.div)`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  width: 40px;
+  height: 40px;
+  background-color: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--background-color);
+  font-size: 1.2em;
+  z-index: 3;
+`;
+
 const results = [
   "Легко розбиратися в інструментах штучного інтелекту",
   "Опанувати нову технічну професію",
@@ -99,13 +111,12 @@ const results = [
   "Автоматизувати частину процесів"
 ];
 
-// Animation variants for result item
 const itemVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: (i) => ({ 
-    opacity: 1, 
+  visible: (i) => ({
+    opacity: 1,
     y: 0,
-    transition: { 
+    transition: {
       delay: i * 0.1,
       duration: 0.5,
       ease: "easeOut"
@@ -113,20 +124,6 @@ const itemVariants = {
   })
 };
 
-// Animation variants for icon
-const iconVariants = {
-  hidden: { scale: 0 },
-  visible: { 
-    scale: 1,
-    transition: {
-      type: "spring",
-      stiffness: 260,
-      damping: 20
-    }
-  }
-};
-
-// ResultsSection component
 const ResultsSection = () => {
   return (
     <SectionContainer>
@@ -150,15 +147,16 @@ const ResultsSection = () => {
               viewport={{ once: true, amount: 0.3 }}
               whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
             >
-              <ResultIcon
-                variants={iconVariants}
-                initial="hidden"
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.3 }}
+              <ResultImage src={`img/card${index + 1}.jpg`} alt={`Result ${index + 1}`} />
+              <ResultContent>
+                <ResultText>{result}</ResultText>
+              </ResultContent>
+              <CheckCircle
+                initial={{ scale: 0, opacity: 0 }}
+                whileHover={{ scale: 1, opacity: 1, rotate: 360, transition: { duration: 0.3 } }}
               >
                 <FaCheck />
-              </ResultIcon>
-              <ResultText>{result}</ResultText>
+              </CheckCircle>
             </ResultItem>
           ))}
         </ResultList>

@@ -2,9 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Icons can be imported from an external file or defined here directly
-// Here, I will define them directly for simplicity.
-
+// Іконки
 const HomeIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
@@ -29,9 +27,9 @@ const StarIcon = () => (
   </svg>
 );
 
-const QuestionIcon = () => (
+const PriceIcon = () => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17h-2v-2h2v2zm2.07-7.75l-.9.92C13.45 12.9 13 13.5 13 15h-2v-.5c0-1.1.45-2.1 1.17-2.83l1.24-1.26c.37-.36.59-.86.59-1.41 0-1.1-.9-2-2-2s-2 .9-2 2H8c0-2.21 1.79-4 4-4s4 1.79 4 4c0 .88-.36 1.68-.93 2.25z"/>
+    <path d="M11.8 10.9c-2.27-.59-3-1.2-3-2.15 0-1.09 1.01-1.85 2.7-1.85 1.78 0 2.44.85 2.5 2.1h2.21c-.07-1.72-1.12-3.3-3.21-3.81V3h-3v2.16c-1.94.42-3.5 1.68-3.5 3.61 0 2.31 1.91 3.46 4.7 4.13 2.5.6 3 1.48 3 2.41 0 .69-.49 1.79-2.7 1.79-2.06 0-2.87-.92-2.98-2.1h-2.2c.12 2.19 1.76 3.42 3.68 3.83V21h3v-2.15c1.95-.37 3.5-1.5 3.5-3.55 0-2.84-2.43-3.81-4.7-4.4z"/>
   </svg>
 );
 
@@ -41,6 +39,7 @@ const CommentsIcon = () => (
   </svg>
 );
 
+// Стилізовані компоненти
 const HeaderWrapper = styled.div`
   width: 100%;
   position: absolute;
@@ -54,27 +53,34 @@ const HeaderContainer = styled.header`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 5%;
-  max-width: 1400px;
+  padding: 20px 2%;
+  width: 100%;
+  max-width: 100%;
   margin: 0 auto;
 
   @media (max-width: 1024px) {
-    padding: 15px 3%;
+    padding: 15px 2%;
   }
 
   @media (max-width: 768px) {
-    padding: 10px 20px;
+    padding: 10px 3%;
   }
 `;
 
 const LogoContainer = styled.div`
-  width: 60px;
-  height: 60px;
-  border-radius: 50%; /* Make the logo container circular */
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+
+  @media (max-width: 1024px) {
+    width: 100px;
+    height: 100px;
+  }
 
   @media (max-width: 768px) {
-    width: 50px;
-    height: 50px;
+    width: 80px;
+    height: 80px;
   }
 `;
 
@@ -82,12 +88,14 @@ const Logo = styled.img`
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 50%; /* Make the logo image circular */
+  border-radius: 50%;
 `;
 
 const Nav = styled.nav`
   display: flex;
   align-items: center;
+  flex-grow: 1;
+  justify-content: flex-end;
 
   @media (max-width: 1024px) {
     display: none;
@@ -97,7 +105,7 @@ const Nav = styled.nav`
 const NavLink = styled.a`
   color: #ffffff;
   text-decoration: none;
-  margin-left: 30px;
+  margin-left: 20px;
   font-size: 16px;
   font-weight: 500;
   cursor: pointer;
@@ -118,11 +126,27 @@ const NavLink = styled.a`
 const MobileMenuIcon = styled.div`
   display: none;
   cursor: pointer;
-  font-size: 24px;
   color: #ffffff;
+  transition: all 0.3s ease;
 
   @media (max-width: 1024px) {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+  }
+
+  span {
     display: block;
+    height: 3px;
+    width: 100%;
+    background-color: #ffffff;
+    transition: all 0.3s ease;
+  }
+
+  &:hover span {
+    background-color: var(--primary-color);
   }
 `;
 
@@ -154,6 +178,11 @@ const CloseButton = styled.button`
   color: #ffffff;
   font-size: 30px;
   cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: var(--primary-color);
+  }
 `;
 
 const Header = () => {
@@ -166,7 +195,7 @@ const Header = () => {
 
   const handleScroll = () => {
     const scrollPosition = window.scrollY;
-    const sections = ['HeroSection', 'ForWhomSection', 'AuthorSection', 'CourseContentSection', 'ResultsSection', 'FAQSection', 'ReviewsSection'];
+    const sections = ['HeroSection', 'ForWhomSection', 'AuthorSection', 'CourseContentSection', 'ResultsSection', 'PricingSection', 'ReviewsSection'];
 
     for (const section of sections) {
       const element = document.getElementById(section);
@@ -199,11 +228,11 @@ const Header = () => {
 
   const navItems = [
     { id: 'HeroSection', label: 'Головна', icon: <HomeIcon /> },
-    { id: 'ForWhomSection', label: 'Для кого', icon: <UserIcon /> },
-    { id: 'AuthorSection', label: 'Автор', icon: <UserIcon /> },
+    { id: 'ForWhomSection', label: 'Про курс', icon: <BookIcon /> },
+    { id: 'AuthorSection', label: 'Викладач', icon: <UserIcon /> },
     { id: 'CourseContentSection', label: 'Програма', icon: <BookIcon /> },
-    { id: 'ResultsSection', label: 'Результати', icon: <StarIcon /> },
-    { id: 'FAQSection', label: 'FAQ', icon: <QuestionIcon /> },
+    { id: 'ResultsSection', label: 'Переваги', icon: <StarIcon /> },
+    { id: 'PricingSection', label: 'Вартість', icon: <PriceIcon /> },
     { id: 'ReviewsSection', label: 'Відгуки', icon: <CommentsIcon /> }
   ];
 
@@ -211,7 +240,7 @@ const Header = () => {
     <HeaderWrapper>
       <HeaderContainer>
         <LogoContainer>
-          <Logo src="/img/proair-logo.png" alt="ProAir Logo" />
+          <Logo src="/img/proair-logo.png" alt="ProAir Лого" />
         </LogoContainer>
         <Nav>
           {navItems.map(({ id, label, icon }) => (
@@ -225,7 +254,9 @@ const Header = () => {
           ))}
         </Nav>
         <MobileMenuIcon onClick={toggleMobileMenu}>
-          ☰
+          <span></span>
+          <span></span>
+          <span></span>
         </MobileMenuIcon>
         <AnimatePresence>
           {isMobileMenuOpen && (
