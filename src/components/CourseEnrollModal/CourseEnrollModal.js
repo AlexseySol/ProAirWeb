@@ -21,16 +21,29 @@ import {
   BenefitItem
 } from './styles';
 
+const LOCAL_STORAGE_KEY = 'courseEnrollModal';
+
 const CourseEnrollModal = ({ isOpen, onClose }) => {
-  const [price, setPrice] = useState(29);
-  const [endTime] = useState(Date.now() + 24 * 60 * 60 * 1000);
-  const [isTimerExpired, setIsTimerExpired] = useState(false);
+  const initialEndTime = Date.now() + 24 * 60 * 60 * 1000; // 24 часа от текущего времени
+  const savedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
+  
+  const [price, setPrice] = useState(savedData?.price || 29);
+  const [endTime] = useState(savedData?.endTime || initialEndTime);  // Removed setEndTime
+  const [isTimerExpired, setIsTimerExpired] = useState(savedData?.isTimerExpired || false);
 
   useEffect(() => {
     if (isTimerExpired) {
       setPrice(109);
     }
-  }, [isTimerExpired]);
+
+    // Сохранение состояния в localStorage при изменении
+    const dataToSave = {
+      price,
+      endTime,
+      isTimerExpired
+    };
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
+  }, [price, endTime, isTimerExpired]);
 
   const renderer = ({ days, hours, minutes, seconds, completed }) => {
     if (completed) {
@@ -58,6 +71,11 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
     );
   };
 
+  const handleTimerComplete = () => {
+    setIsTimerExpired(true);
+    setPrice(109);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -67,11 +85,13 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
         <ContentWrapper>
           <LeftColumn>
             <Title>Спеціальна пропозиція!</Title>
-            <Countdown 
-              date={endTime} 
-              onComplete={() => setIsTimerExpired(true)}
-              renderer={renderer}
-            />
+            {!isTimerExpired && (
+              <Countdown 
+                date={endTime} 
+                onComplete={handleTimerComplete}
+                renderer={renderer}
+              />
+            )}
             <PriceContainer>
               <CurrentPrice>${price}</CurrentPrice>
               {!isTimerExpired && (

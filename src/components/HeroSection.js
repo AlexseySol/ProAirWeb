@@ -265,11 +265,13 @@ const HeroSection = () => {
                 loop 
                 muted={isMuted}
                 playsInline
+                crossOrigin="anonymous"  // Added crossOrigin attribute
                 onCanPlay={handleVideoPlay}
                 onError={handleVideoError}
-                controls  // Added controls attribute to give users manual control
+                controls
               >
                 <source src="/img/your-video-file.MP4" type="video/mp4" />
+                <source src="/img/your-video-file.webm" type="video/webm" />
                 Your browser does not support the video tag.
               </Video>
               <MuteButton onClick={toggleMute}>
