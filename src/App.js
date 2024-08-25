@@ -10,6 +10,7 @@ import ResultsSection from './components/ResultsSection';
 import OfferSection from './components/OfferSection';
 import FAQSection from './components/FAQSection';
 import ReviewsSection from './components/ReviewsSection';
+import DiscountCorner from './components/DiscountCorner';
 
 const AppContainer = styled(motion.div)`
   width: 100%;
@@ -115,6 +116,7 @@ const App = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
+        <DiscountCorner discountPercentage={73} />
         <MainContent>
           <Section id="HeroSection"><HeroSection /></Section>
           <Section id="ForWhomSection"><ForWhomSection /></Section>

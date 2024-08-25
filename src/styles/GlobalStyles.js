@@ -8,7 +8,7 @@ const subtleFade = keyframes`
 
 // Global styles
 const GlobalStyle = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
   
   :root {
     --primary-color: #B768FF; // Bright purple from the logo
@@ -26,25 +26,39 @@ const GlobalStyle = createGlobalStyle`
     padding: 0;
   }
 
+  html {
+    font-size: 16px; // Base font size
+  }
+
   body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Noto Sans', sans-serif;
     line-height: 1.6;
-    font-size: 16px;
     background: var(--background-color);
     color: var(--text-color);
     overflow-x: hidden;
   }
 
+  // Apply Noto Sans to all text elements
+  body, input, textarea, button, select {
+    font-family: 'Noto Sans', sans-serif;
+  }
+
   h1, h2, h3, h4, h5, h6 {
     color: var(--text-color);
-    font-family: 'Poppins', sans-serif;
     margin-bottom: 1rem;
     font-weight: 700;
     line-height: 1.2;
     animation: ${subtleFade} 3s ease-in-out infinite;
   }
 
-  p {
+  h1 { font-size: 2.5rem; }
+  h2 { font-size: 2rem; }
+  h3 { font-size: 1.75rem; }
+  h4 { font-size: 1.5rem; }
+  h5 { font-size: 1.25rem; }
+  h6 { font-size: 1rem; }
+
+  p, ul, ol, dl, table, blockquote {
     color: var(--text-color-secondary);
     margin-bottom: 1rem;
     font-weight: 400;
@@ -61,7 +75,6 @@ const GlobalStyle = createGlobalStyle`
 
   button {
     cursor: pointer;
-    font-family: inherit;
     transition: all 0.3s ease;
     background: var(--button-color);
     color: var(--button-text-color);
@@ -76,15 +89,35 @@ const GlobalStyle = createGlobalStyle`
   }
 
   .logo-text {
-    font-family: 'Poppins', sans-serif;
     font-weight: 700;
     letter-spacing: 1px;
     color: var(--text-color);
     animation: ${subtleFade} 3s ease-in-out infinite;
   }
 
+  // Additional text styles
+  strong, b { font-weight: 700; }
+  em, i { font-style: italic; }
+
+  // List styles
+  ul, ol {
+    padding-left: 1.5rem;
+  }
+
+  // Table styles
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 0.5rem;
+    border: 1px solid var(--text-color-secondary);
+  }
+
+  // Responsive typography
   @media (max-width: 768px) {
-    body {
+    html {
       font-size: 14px;
     }
   }

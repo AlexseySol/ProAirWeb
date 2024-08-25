@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import styled, { keyframes } from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import Countdown from 'react-countdown';
+import Sparkle from 'react-sparkle';
+import CourseEnrollModal from './CourseEnrollModal/CourseEnrollModal';
 
 const SectionContainer = styled.section`
   padding: 30px 20px;
@@ -60,47 +63,100 @@ const OfferIcon = styled.span`
   }
 `;
 
+const glowAnimation = keyframes`
+  0% { box-shadow: 0 0 5px rgba(138, 43, 226, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(138, 43, 226, 0.8); }
+  100% { box-shadow: 0 0 5px rgba(138, 43, 226, 0.5); }
+`;
+
+const TimerContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px;
+  background: rgba(138, 43, 226, 0.1);
+  border-radius: 15px;
+  animation: ${glowAnimation} 2s infinite;
+`;
+
+const TimerBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 10px;
+`;
+
+const TimerValue = styled.div`
+  font-size: 2.5em;
+  font-weight: bold;
+  color: var(--primary-color);
+`;
+
+const TimerLabel = styled.div`
+  font-size: 0.9em;
+  color: var(--secondary-color);
+  text-transform: uppercase;
+`;
+
+const TimerSeparator = styled.div`
+  font-size: 2.5em;
+  color: var(--primary-color);
+  margin: 0 5px;
+`;
+
 const pulse = keyframes`
-  0% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(138, 43, 226, 0.4);
-  }
-  70% {
-    transform: scale(1.05);
-    box-shadow: 0 0 0 10px rgba(138, 43, 226, 0);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 0 0 0 rgba(138, 43, 226, 0);
-  }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+`;
+
+const float = keyframes`
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+`;
+
+const glow = keyframes`
+  0%, 100% { text-shadow: 0 0 5px rgba(255, 107, 107, 0.5), 0 0 10px rgba(255, 107, 107, 0.3); }
+  50% { text-shadow: 0 0 20px rgba(255, 107, 107, 0.8), 0 0 30px rgba(255, 107, 107, 0.5); }
 `;
 
 const PriceTag = styled(motion.div)`
-  font-size: 2em;
+  font-size: 2.5em;
   font-weight: bold;
   color: var(--secondary-color);
   margin-bottom: 20px;
   display: inline-block;
-  padding: 10px 20px;
+  padding: 15px 25px;
   border-radius: 15px;
   background: rgba(138, 43, 226, 0.1);
-  animation: ${pulse} 2s infinite;
+  position: relative;
+  animation: ${float} 3s ease-in-out infinite;
 
   @media (max-width: 768px) {
-    font-size: 1.6em;
+    font-size: 2em;
   }
 `;
 
 const StrikethroughPrice = styled.span`
   text-decoration: line-through;
   color: #888;
-  font-size: 0.8em;
+  font-size: 0.6em;
   margin-left: 10px;
+  vertical-align: middle;
 `;
 
 const HighlightedPrice = styled.span`
   color: #ff6b6b;
   font-weight: bold;
+  animation: ${pulse} 2s infinite, ${glow} 2s infinite;
+  display: inline-block;
+`;
+
+const RegularPrice = styled.div`
+  font-size: 2.5em;
+  font-weight: bold;
+  color: var(--primary-color);
+  margin-bottom: 20px;
 `;
 
 const CTAButton = styled(motion.button)`
@@ -132,8 +188,38 @@ const offerItems = [
 ];
 
 const OfferSection = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isOfferActive, setIsOfferActive] = useState(true);
+  const initialEndTime = useMemo(() => Date.now() + 5 * 60 * 1000, []);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleTimerComplete = () => {
+    setIsOfferActive(false);
+  };
+
+  const renderer = ({ minutes, seconds, completed }) => {
+    if (completed) {
+      return null;
+    }
+    return (
+      <TimerContainer>
+        <TimerBlock>
+          <TimerValue>{minutes.toString().padStart(2, '0')}</TimerValue>
+          <TimerLabel>хвилин</TimerLabel>
+        </TimerBlock>
+        <TimerSeparator>:</TimerSeparator>
+        <TimerBlock>
+          <TimerValue>{seconds.toString().padStart(2, '0')}</TimerValue>
+          <TimerLabel>секунд</TimerLabel>
+        </TimerBlock>
+      </TimerContainer>
+    );
+  };
+
   return (
-    <SectionContainer>
+    <SectionContainer id="PricingSection">
       <Content>
         <Title
           initial={{ opacity: 0, y: -30 }}
@@ -156,21 +242,53 @@ const OfferSection = () => {
             </OfferItem>
           ))}
         </OfferList>
-        <PriceTag
-          initial={{ scale: 0.8, opacity: 0 }}
-          whileInView={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          viewport={{ once: true, amount: 0.3 }}
-        >
-          Спеціальна пропозиція: <HighlightedPrice>29$</HighlightedPrice> <StrikethroughPrice>105$</StrikethroughPrice>
-        </PriceTag>
+        <AnimatePresence>
+          {isOfferActive && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+            >
+              <Countdown
+                date={initialEndTime}
+                renderer={renderer}
+                onComplete={handleTimerComplete}
+              />
+              <PriceTag
+                initial={{ scale: 0.8, opacity: 0 }}
+                whileInView={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5 }}
+                viewport={{ once: true, amount: 0.3 }}
+              >
+                Спеціальна пропозиція: <HighlightedPrice>29$</HighlightedPrice> 
+                <StrikethroughPrice>109$</StrikethroughPrice>
+                <Sparkle
+                  color="var(--secondary-color)"
+                  count={30}
+                  minSize={7}
+                  maxSize={12}
+                  overflowPx={0}
+                  fadeOutSpeed={30}
+                  flicker={false}
+                />
+              </PriceTag>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        {!isOfferActive && (
+          <RegularPrice>
+            Вартість курсу: 109$
+          </RegularPrice>
+        )}
         <CTAButton
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={openModal}
         >
           Долучитись до курсу
         </CTAButton>
       </Content>
+      <CourseEnrollModal isOpen={isModalOpen} onClose={closeModal} />
     </SectionContainer>
   );
 };

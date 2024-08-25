@@ -1,42 +1,66 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Countdown from 'react-countdown';
 import EnrollmentForm from './EnrollmentForm';
-import { 
-  ModalOverlay, 
-  ModalContent, 
-  CloseButton, 
-  Title, 
-  TimerContainer, 
+import PaymentResult from '../fondy/PaymentResult';
+import {
+  ModalOverlay,
+  ModalContent,
+  CloseButton,
+  Title,
+  TimerContainer,
   TimerBlock,
   TimerValue,
   TimerLabel,
   PriceContainer,
-  CurrentPrice, 
+  CurrentPrice,
   OriginalPrice,
   Discount,
   ContentWrapper,
   LeftColumn,
   RightColumn,
-  BenefitList, 
+  BenefitList,
   BenefitItem
 } from './styles';
+import styled, { keyframes } from 'styled-components';
 
 const LOCAL_STORAGE_KEY = 'courseEnrollModal';
 
+const fadeInOut = keyframes`
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+`;
+
+const ExpiredTimerContainer = styled(TimerContainer)`
+  opacity: 0.5;
+  animation: ${fadeInOut} 2s infinite;
+`;
+
 const CourseEnrollModal = ({ isOpen, onClose }) => {
-  const initialEndTime = Date.now() + 24 * 60 * 60 * 1000; // 24 часа от текущего времени
-  const savedData = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY));
-  
-  const [price, setPrice] = useState(savedData?.price || 29);
-  const [endTime] = useState(savedData?.endTime || initialEndTime);  // Removed setEndTime
-  const [isTimerExpired, setIsTimerExpired] = useState(savedData?.isTimerExpired || false);
+  const initialEndTime = useMemo(() => Date.now() + 5 * 60 * 1000, []);
+
+  const [price, setPrice] = useState(29);
+  const [endTime, setEndTime] = useState(initialEndTime);
+  const [isTimerExpired, setIsTimerExpired] = useState(false);
+  const [showPaymentResult, setShowPaymentResult] = useState(false);
+
+  useEffect(() => {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    setEndTime(initialEndTime);
+    setIsTimerExpired(false);
+    setPrice(29);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const orderId = urlParams.get('order_id');
+    if (orderId) {
+      setShowPaymentResult(true);
+    }
+  }, [initialEndTime]);
 
   useEffect(() => {
     if (isTimerExpired) {
       setPrice(109);
     }
 
-    // Сохранение состояния в localStorage при изменении
     const dataToSave = {
       price,
       endTime,
@@ -45,26 +69,29 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(dataToSave));
   }, [price, endTime, isTimerExpired]);
 
-  const renderer = ({ days, hours, minutes, seconds, completed }) => {
+  const renderer = ({ minutes, seconds, completed }) => {
     if (completed) {
-      return null;
+      return (
+        <ExpiredTimerContainer>
+          <TimerBlock>
+            <TimerValue>00</TimerValue>
+            <TimerLabel>хвилин</TimerLabel>
+          </TimerBlock>
+          <TimerBlock>
+            <TimerValue>00</TimerValue>
+            <TimerLabel>секунд</TimerLabel>
+          </TimerBlock>
+        </ExpiredTimerContainer>
+      );
     }
     return (
       <TimerContainer>
         <TimerBlock>
-          <TimerValue>{days}</TimerValue>
-          <TimerLabel>днів</TimerLabel>
-        </TimerBlock>
-        <TimerBlock>
-          <TimerValue>{hours}</TimerValue>
-          <TimerLabel>годин</TimerLabel>
-        </TimerBlock>
-        <TimerBlock>
-          <TimerValue>{minutes}</TimerValue>
+          <TimerValue>{minutes.toString().padStart(2, '0')}</TimerValue>
           <TimerLabel>хвилин</TimerLabel>
         </TimerBlock>
         <TimerBlock>
-          <TimerValue>{seconds}</TimerValue>
+          <TimerValue>{seconds.toString().padStart(2, '0')}</TimerValue>
           <TimerLabel>секунд</TimerLabel>
         </TimerBlock>
       </TimerContainer>
@@ -82,36 +109,40 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
     <ModalOverlay onClick={onClose}>
       <ModalContent onClick={e => e.stopPropagation()}>
         <CloseButton onClick={onClose}>&times;</CloseButton>
-        <ContentWrapper>
-          <LeftColumn>
-            <Title>Спеціальна пропозиція!</Title>
-            {!isTimerExpired && (
-              <Countdown 
-                date={endTime} 
+        {showPaymentResult ? (
+          <PaymentResult />
+        ) : (
+          <ContentWrapper>
+            <LeftColumn>
+              <Title>
+                {isTimerExpired ? 'Стандартна ціна' : 'Спеціальна пропозиція!'}
+              </Title>
+              <Countdown
+                date={endTime}
                 onComplete={handleTimerComplete}
                 renderer={renderer}
               />
-            )}
-            <PriceContainer>
-              <CurrentPrice>${price}</CurrentPrice>
-              {!isTimerExpired && (
-                <>
-                  <OriginalPrice>$109</OriginalPrice>
-                  <Discount>Економія 73%</Discount>
-                </>
-              )}
-            </PriceContainer>
-            <BenefitList>
-              <BenefitItem>Доступ до всіх матеріалів курсу</BenefitItem>
-              <BenefitItem>Персональний менторинг</BenefitItem>
-              <BenefitItem>Сертифікат про проходження</BenefitItem>
-              <BenefitItem>Бонус: 20 AI-інструментів для заробітку</BenefitItem>
-            </BenefitList>
-          </LeftColumn>
-          <RightColumn>
-            <EnrollmentForm price={price} onClose={onClose} />
-          </RightColumn>
-        </ContentWrapper>
+              <PriceContainer>
+                <CurrentPrice>${price}</CurrentPrice>
+                {!isTimerExpired && (
+                  <>
+                    <OriginalPrice>$109</OriginalPrice>
+                    <Discount>Економія 73%</Discount>
+                  </>
+                )}
+              </PriceContainer>
+              <BenefitList>
+                <BenefitItem>Доступ до всіх матеріалів курсу</BenefitItem>
+                <BenefitItem>Персональний менторинг</BenefitItem>
+                <BenefitItem>Сертифікат про проходження</BenefitItem>
+                <BenefitItem>Бонус: 20 AI-інструментів для заробітку</BenefitItem>
+              </BenefitList>
+            </LeftColumn>
+            <RightColumn>
+              <EnrollmentForm price={price} onClose={onClose} />
+            </RightColumn>
+          </ContentWrapper>
+        )}
       </ModalContent>
     </ModalOverlay>
   );

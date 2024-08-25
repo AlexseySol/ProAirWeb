@@ -17,6 +17,16 @@ const SectionContainer = styled.section`
   }
 `;
 
+const Road = styled.svg`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+`;
+
 const Content = styled.div`
   max-width: 1000px;
   margin: 0 auto;
@@ -127,6 +137,14 @@ const itemVariants = {
 const ResultsSection = () => {
   return (
     <SectionContainer>
+      <Road viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid slice">
+        <path
+          d="M0,300 Q250,100 500,300 T1000,300"
+          fill="none"
+          stroke="rgba(255,255,255,0.2)"
+          strokeWidth="10"
+        />
+      </Road>
       <Content>
         <Title
           initial={{ opacity: 0, y: -30 }}
