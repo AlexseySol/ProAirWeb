@@ -162,7 +162,6 @@ const MobileMenu = styled(motion.div)`
   justify-content: center;
   align-items: center;
   z-index: 100000;
-  backdrop-filter: blur(5px);
 `;
 
 const MobileNavLink = styled(NavLink)`
