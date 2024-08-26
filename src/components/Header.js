@@ -161,7 +161,8 @@ const MobileMenu = styled(motion.div)`
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  z-index: 1001;
+  z-index: 100000;
+  backdrop-filter: blur(5px);
 `;
 
 const MobileNavLink = styled(NavLink)`

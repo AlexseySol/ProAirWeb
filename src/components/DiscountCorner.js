@@ -24,9 +24,16 @@ const CornerWrapper = styled.div`
   right: 20px;
   width: 180px;
   height: 180px;
-  z-index: 1000;
+  z-index: 5; // Очень низкий z-index
   clip-path: polygon(100% 0, 100% 100%, 0 100%);
   animation: ${fadeIn} 0.5s ease-out;
+
+  @media (max-width: 768px) {
+    width: 120px;
+    height: 120px;
+    bottom: 10px;
+    right: 10px;
+  }
 `;
 
 const DiscountCard = styled.div`
@@ -67,6 +74,10 @@ const TextWrapper = styled.div`
   transform: rotate(-45deg);
   text-align: center;
   padding: 10px;
+
+  @media (max-width: 768px) {
+    transform: rotate(-45deg) scale(0.7);
+  }
 `;
 
 const DiscountAmount = styled.div`
@@ -111,9 +122,11 @@ const DiscountCorner = () => {
     };
 
     checkDiscountAvailability();
-    const intervalId = setInterval(checkDiscountAvailability, 1000);
+    const discountInterval = setInterval(checkDiscountAvailability, 1000);
 
-    return () => clearInterval(intervalId);
+    return () => {
+      clearInterval(discountInterval);
+    };
   }, []);
 
   const handleClick = () => {

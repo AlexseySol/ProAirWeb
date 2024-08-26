@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import Header from './Header';
 import CourseEnrollModal from './CourseEnrollModal/CourseEnrollModal';
-
+import DiscountCorner from './DiscountCorner';
 const SectionContainer = styled.section`
   position: relative;
   min-height: 100vh;
@@ -218,8 +218,10 @@ const HeroSection = () => {
 
   return (
     <SectionContainer>
+      
       <BackgroundImage />
       <StyledHeader />
+      <DiscountCorner discountPercentage={73} />
       <ContentWrapper>
         <TextContainer>
           <Title

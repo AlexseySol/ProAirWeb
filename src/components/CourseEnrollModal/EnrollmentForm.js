@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Form, Input, SubmitButton, ErrorMessage } from './styles';
 import { initializePayment } from '../fondy/api';
 import { generateOrderId } from '../fondy/utils';
@@ -14,7 +14,7 @@ const EnrollmentForm = ({ price, onClose }) => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e) => {
+  const handleChange = useCallback((e) => {
     const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
@@ -23,9 +23,9 @@ const EnrollmentForm = ({ price, onClose }) => {
     if (errors[name]) {
       setErrors(prevErrors => ({ ...prevErrors, [name]: '' }));
     }
-  };
+  }, [errors]);
 
-  const validateForm = () => {
+  const validateForm = useCallback(() => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = "Ім'я обов'язкове";
     if (!formData.email.trim()) {
@@ -36,7 +36,7 @@ const EnrollmentForm = ({ price, onClose }) => {
     if (!formData.phone.trim()) newErrors.phone = "Телефон обов'язковий";
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
+  }, [formData]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +53,10 @@ const EnrollmentForm = ({ price, onClose }) => {
         window.location.href = paymentData.checkout_url;
       } catch (error) {
         console.error('Error during payment initialization:', error);
-        alert(`Помилка при ініціалізації платежу: ${error.message}. Спробуйте ще раз.`);
+        setErrors(prevErrors => ({
+          ...prevErrors,
+          submit: `Помилка при ініціалізації платежу: ${error.message}. Спробуйте ще раз.`
+        }));
       } finally {
         setIsSubmitting(false);
       }
@@ -100,6 +103,7 @@ const EnrollmentForm = ({ price, onClose }) => {
         value={formData.position}
         onChange={handleChange}
       />
+      {errors.submit && <ErrorMessage>{errors.submit}</ErrorMessage>}
       <SubmitButton type="submit" disabled={isSubmitting}>
         {isSubmitting ? 'Відправка...' : `Отримати доступ за $${price}`}
       </SubmitButton>
@@ -108,7 +112,6 @@ const EnrollmentForm = ({ price, onClose }) => {
 };
 
 export default EnrollmentForm;
-
 
 
 /* import React, { useState } from 'react';

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaChevronLeft, FaChevronRight, FaQuoteLeft } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaQuoteLeft, FaSync } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
   padding: 30px 20px;
@@ -207,6 +207,26 @@ const QuoteIcon = styled(FaQuoteLeft)`
   color: rgba(138, 43, 226, 0.2);
 `;
 
+const FlipIndicator = styled.div`
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background-color: rgba(138, 43, 226, 0.7);
+  color: white;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+
+  &:hover {
+    transform: rotate(180deg);
+  }
+`;
+
 const reviews = [
   {
     videoUrl: "https://www.youtube.com/embed/sampleVideoID1",
@@ -327,10 +347,16 @@ const ReviewsSection = () => {
                     <ReviewerName>{review.name}</ReviewerName>
                     <ReviewerPosition>{review.position}</ReviewerPosition>
                   </ReviewerInfo>
+                  <FlipIndicator>
+                    <FaSync />
+                  </FlipIndicator>
                 </CardFront>
                 <CardBack>
                   <QuoteIcon />
                   <ReviewText>{review.text}</ReviewText>
+                  <FlipIndicator>
+                    <FaSync />
+                  </FlipIndicator>
                 </CardBack>
               </FlipCardInner>
             </FlipCard>
