@@ -42,7 +42,7 @@ const CommentsIcon = () => (
 // Стилізовані компоненти
 const HeaderWrapper = styled.div`
   width: 100%;
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   z-index: 1000;
@@ -155,7 +155,7 @@ const MobileMenu = styled(motion.div)`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.9);
   display: flex;
   flex-direction: column;
@@ -163,17 +163,15 @@ const MobileMenu = styled(motion.div)`
   align-items: center;
   z-index: 1001;
   overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
 `;
 
 const MobileNavLink = styled(NavLink)`
   margin: 15px 0;
   font-size: 20px;
-  padding: 10px;
 `;
 
 const CloseButton = styled.button`
-  position: fixed;
+  position: absolute;
   top: 20px;
   right: 20px;
   background: none;
@@ -182,7 +180,6 @@ const CloseButton = styled.button`
   font-size: 30px;
   cursor: pointer;
   transition: all 0.3s ease;
-  z-index: 1002;
 
   &:hover {
     color: var(--primary-color);
