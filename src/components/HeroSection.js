@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import Header from './Header';
 import CourseEnrollModal from './CourseEnrollModal/CourseEnrollModal';
 import DiscountCorner from './DiscountCorner';
+
 const SectionContainer = styled.section`
   position: relative;
   min-height: 100vh;
@@ -128,85 +129,34 @@ const CTAButton = styled(motion.button)`
 `;
 
 const VideoContainer = styled.div`
-  flex: 1;
-  max-width: 50%;
-  aspect-ratio: 16 / 9;
+  width: 560px;
+  height: 315px;
   position: relative;
   overflow: hidden;
   border-radius: 15px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-  background: rgba(0, 119, 204, 0.1);
+  margin-right: 5%;
 
   @media (max-width: 1200px) {
-    max-width: 100%;
-    width: 100%;
     margin-top: 2rem;
+    margin-right: 0;
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 56.25vw; // 16:9 aspect ratio
+    max-height: 315px;
   }
 `;
 
-const Video = styled.video`
+const VideoEmbed = styled.iframe`
   width: 100%;
   height: 100%;
-  object-fit: contain;
-`;
-
-const MuteButton = styled.button`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: rgba(0, 0, 0, 0.5);
   border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-  padding: 5px 10px;
-  border-radius: 50%;
-  &:hover {
-    background: rgba(0, 0, 0, 0.7);
-  }
-`;
-
-const ErrorMessage = styled.p`
-  color: #ff6b6b;
-  text-align: center;
-  padding: 20px;
 `;
 
 const HeroSection = () => {
-  const [showVideo, setShowVideo] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [videoError, setVideoError] = useState(false);
   const [isEnrollModalOpen, setIsEnrollModalOpen] = useState(false);
-  const videoRef = useRef(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowVideo(true);
-    }, 2000);
-
-    return () => clearTimeout(timer);
-  }, []);
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !videoRef.current.muted;
-      setIsMuted(!isMuted);
-    }
-  };
-
-  const handleVideoError = () => {
-    console.error("Помилка завантаження відео");
-    setVideoError(true);
-  };
-
-  const handleVideoPlay = () => {
-    if (videoRef.current) {
-      videoRef.current.play().catch(error => {
-        console.error("Автовідтворення не вдалося:", error);
-        setVideoError(true);
-      });
-    }
-  };
 
   const openEnrollModal = () => {
     setIsEnrollModalOpen(true);
@@ -218,7 +168,6 @@ const HeroSection = () => {
 
   return (
     <SectionContainer>
-      
       <BackgroundImage />
       <StyledHeader />
       <DiscountCorner discountPercentage={73} />
@@ -259,31 +208,13 @@ const HeroSection = () => {
           </CTAButton>
         </TextContainer>
         <VideoContainer>
-          {showVideo && !videoError && (
-            <>
-              <Video 
-                ref={videoRef}
-                autoPlay 
-                loop 
-                muted={isMuted}
-                playsInline
-                crossOrigin="anonymous"  // Added crossOrigin attribute
-                onCanPlay={handleVideoPlay}
-                onError={handleVideoError}
-                controls
-              >
-                <source src="/img/your-video-file.MP4" type="video/mp4" />
-                <source src="/img/your-video-file.webm" type="video/webm" />
-                Your browser does not support the video tag.
-              </Video>
-              <MuteButton onClick={toggleMute}>
-                {isMuted ? '🔇' : '🔊'}
-              </MuteButton>
-            </>
-          )}
-          {videoError && (
-            <ErrorMessage>Не вдалося завантажити відео. Будь ласка, спробуйте пізніше.</ErrorMessage>
-          )}
+          <VideoEmbed
+            src="https://www.youtube.com/embed/NpQ5HDJxhgY?autoplay=1&controls=0&rel=0&loop=1&playlist=NpQ5HDJxhgY"
+            title="YouTube video"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
         </VideoContainer>
       </ContentWrapper>
       <CourseEnrollModal isOpen={isEnrollModalOpen} onClose={closeEnrollModal} />

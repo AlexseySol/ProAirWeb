@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { FaChevronLeft, FaChevronRight, FaQuoteLeft, FaSync } from 'react-icons/fa';
+import { FaSync } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
   padding: 30px 20px;
@@ -30,63 +30,6 @@ const ReviewsContainer = styled.div`
   margin: 0 auto;
 `;
 
-const VideoCarousel = styled.div`
-  position: relative;
-  margin-bottom: 40px;
-`;
-
-const VideoWrapper = styled(motion.div)`
-  position: relative;
-  padding-bottom: 56.25%; /* 16:9 */
-  height: 0;
-  overflow: hidden;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-`;
-
-const Video = styled.iframe`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  border: none;
-`;
-
-const CarouselButton = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(138, 43, 226, 0.7);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  transition: background 0.3s;
-  z-index: 2;
-
-  &:hover {
-    background: rgba(138, 43, 226, 1);
-  }
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const PrevButton = styled(CarouselButton)`
-  left: 10px;
-`;
-
-const NextButton = styled(CarouselButton)`
-  right: 10px;
-`;
-
 const TextReviewsContainer = styled.div`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -105,12 +48,8 @@ const TextReviewsContainer = styled.div`
 const FlipCard = styled(motion.div)`
   perspective: 1000px;
   height: 0;
-  padding-bottom: 133.33%; // Соотношение сторон 3:4
+  padding-bottom: 177.78%; // Соотношение сторон 9:16 для вертикального видео
   cursor: pointer;
-
-  @media (max-width: 768px) {
-    padding-bottom: 120%; // Немного уменьшаем высоту на маленьких экранах
-  }
 `;
 
 const FlipCardInner = styled(motion.div)`
@@ -127,9 +66,6 @@ const CardSide = styled.div`
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0 5px 15px rgba(138, 43, 226, 0.1);
@@ -140,21 +76,17 @@ const CardFront = styled(CardSide)`
 `;
 
 const CardBack = styled(CardSide)`
-  background: linear-gradient(145deg, rgba(138, 43, 226, 0.1), rgba(255, 255, 255, 0.1));
+  background: black;
   transform: rotateY(180deg);
-  padding: 20px;
 `;
 
 const ReviewerImage = styled.div`
   width: 100%;
-  height: 70%;
+  height: 100%;
   position: relative;
   overflow: hidden;
 
   img {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
@@ -162,12 +94,12 @@ const ReviewerImage = styled.div`
 `;
 
 const ReviewerInfo = styled.div`
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
   background: rgba(0, 0, 0, 0.7);
   padding: 15px;
-  height: 30%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
 `;
 
 const ReviewerName = styled.h4`
@@ -181,30 +113,10 @@ const ReviewerPosition = styled.p`
   color: var(--secondary-color);
 `;
 
-const ReviewText = styled.p`
-  font-size: 1em;
-  color: var(--text-color);
-  line-height: 1.5;
-  overflow-y: auto;
+const ShortsEmbed = styled.iframe`
+  width: 100%;
   height: 100%;
-  padding-right: 10px;
-
-  &::-webkit-scrollbar {
-    width: 5px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--secondary-color);
-    border-radius: 10px;
-  }
-`;
-
-const QuoteIcon = styled(FaQuoteLeft)`
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 1.5em;
-  color: rgba(138, 43, 226, 0.2);
+  border: none;
 `;
 
 const FlipIndicator = styled.div`
@@ -221,6 +133,7 @@ const FlipIndicator = styled.div`
   align-items: center;
   cursor: pointer;
   transition: transform 0.3s ease-in-out;
+  z-index: 10;
 
   &:hover {
     transform: rotate(180deg);
@@ -229,50 +142,56 @@ const FlipIndicator = styled.div`
 
 const reviews = [
   {
-    videoUrl: "https://www.youtube.com/embed/sampleVideoID1",
+    videoId: "1ZBbaDn1bZ8",
     imageUrl: "/img/card1.png",
     name: "Іван Іванов",
     position: "Фрілансер, Web Developer",
-    text: "Цей курс дійсно змінив моє бачення роботи з AI. Я навчився створювати неймовірні речі, про які раніше тільки мріяв. Рекомендую всім, хто хоче бути на передовій технологій!"
   },
   {
-    videoUrl: "https://www.youtube.com/embed/sampleVideoID2",
+    videoId: "0YStEv1QjkA",
     imageUrl: "/img/card2.png",
     name: "Олена Петрова",
     position: "CEO, DesignPro Studio",
-    text: "Відмінний курс! Дуже багато практичної інформації. Особливо сподобалась частина про створення візуального контенту - тепер я можу легко генерувати унікальні зображення для своїх проектів."
   },
   {
-    videoUrl: "https://www.youtube.com/embed/sampleVideoID3",
+    videoId: "TsT_mlMMdvQ",
     imageUrl: "/img/card4.png",
     name: "Михайло Сидоренко",
     position: "Підприємець, AI Enthusiast",
-    text: "Завдяки цьому курсу я зміг автоматизувати багато процесів у своєму бізнесі. Економія часу просто вражаюча! Дякую за такий цінний досвід."
   },
   {
-    videoUrl: "https://www.youtube.com/embed/sampleVideoID4",
+    videoId: "Qhl9tQfQr1w",
     imageUrl: "/img/card3.png",
     name: "Анна Ковальчук",
     position: "Маркетолог, AI Creator",
-    text: "Курс перевершив усі мої очікування! Тепер я можу створювати унікальний контент за допомогою AI, що значно підвищило ефективність моїх маркетингових кампаній."
   }
 ];
 
 const ReviewsSection = () => {
-  const [currentVideo, setCurrentVideo] = useState(0);
-  const [flippedCards, setFlippedCards] = useState({});
-
-  const nextVideo = () => {
-    setCurrentVideo((prev) => (prev + 1) % reviews.length);
-  };
-
-  const prevVideo = () => {
-    setCurrentVideo((prev) => (prev - 1 + reviews.length) % reviews.length);
-  };
+  const [activeCard, setActiveCard] = useState(null);
+  const iframeRef = useRef(null);
 
   const toggleCard = (index) => {
-    setFlippedCards(prev => ({ ...prev, [index]: !prev[index] }));
+    if (activeCard === index) {
+      setActiveCard(null);
+    } else {
+      setActiveCard(index);
+    }
   };
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      if (event.data === 'YT_video_ended') {
+        setActiveCard(null);
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+
+    return () => {
+      window.removeEventListener('message', handleMessage);
+    };
+  }, []);
 
   const cardVariants = {
     hidden: { opacity: 0, y: 50 },
@@ -306,24 +225,6 @@ const ReviewsSection = () => {
         Відгуки наших студентів
       </Title>
       <ReviewsContainer>
-        <VideoCarousel>
-          <VideoWrapper
-            key={currentVideo}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-          >
-            <Video
-              src={reviews[currentVideo].videoUrl}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              title={`Review Video ${currentVideo + 1}`}
-            />
-          </VideoWrapper>
-          <PrevButton onClick={prevVideo}><FaChevronLeft /></PrevButton>
-          <NextButton onClick={nextVideo}><FaChevronRight /></NextButton>
-        </VideoCarousel>
         <TextReviewsContainer>
           {reviews.map((review, index) => (
             <FlipCard 
@@ -336,7 +237,7 @@ const ReviewsSection = () => {
               whileTap={{ scale: 0.95 }}
             >
               <FlipCardInner
-                animate={{ rotateY: flippedCards[index] ? 180 : 0 }}
+                animate={{ rotateY: activeCard === index ? 180 : 0 }}
                 transition={{ duration: 0.6 }}
               >
                 <CardFront>
@@ -352,9 +253,20 @@ const ReviewsSection = () => {
                   </FlipIndicator>
                 </CardFront>
                 <CardBack>
-                  <QuoteIcon />
-                  <ReviewText>{review.text}</ReviewText>
-                  <FlipIndicator>
+                  {activeCard === index && (
+                    <ShortsEmbed
+                      ref={iframeRef}
+                      src={`https://www.youtube.com/embed/${review.videoId}?autoplay=1&controls=0&rel=0&loop=1&playlist=${review.videoId}&enablejsapi=1`}
+                      title="YouTube Shorts video"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  )}
+                  <FlipIndicator onClick={(e) => {
+                    e.stopPropagation();
+                    toggleCard(index);
+                  }}>
                     <FaSync />
                   </FlipIndicator>
                 </CardBack>
