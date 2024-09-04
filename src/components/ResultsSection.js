@@ -84,15 +84,25 @@ const ResultContent = styled.div`
   background: rgba(0, 0, 0, 0.7);
   color: white;
   z-index: 2;
+  height: 40%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 `;
 
 const ResultText = styled.p`
   margin: 0;
   font-size: 1.1em;
-  line-height: 1.6;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   @media (max-width: 768px) {
     font-size: 1em;
+    -webkit-line-clamp: 4;
   }
 `;
 
@@ -165,7 +175,7 @@ const ResultsSection = () => {
               viewport={{ once: true, amount: 0.3 }}
               whileHover={{ scale: 1.05, transition: { duration: 0.2 } }}
             >
-              <ResultImage src={`img/card${index + 1}.jpg`} alt={`Result ${index + 1}`} />
+              <ResultImage src={`img/card${index + 1}.png`} alt={`Result ${index + 1}`} />
               <ResultContent>
                 <ResultText>{result}</ResultText>
               </ResultContent>
