@@ -56,7 +56,7 @@
   },
   "proxy": "http://localhost:5000",
   "engines": {
-    "node": "14.x"
+  "node": "20.x"
   },
   "browserslist": {
     "production": [
