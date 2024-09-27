@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { FaUserGraduate, FaBrain, FaCertificate, FaChalkboardTeacher, FaBook, FaCalendarAlt, FaLaptop, FaQuestionCircle, FaTools, FaRocket } from 'react-icons/fa';
 
 const SectionContainer = styled.section`
-  padding: 60px 20px;
+
   background: inherit;
   background-size: inherit;
   animation: inherit;
@@ -91,6 +91,8 @@ const Answer = styled(motion.div)`
     font-size: 1em;
   }
 `;
+
+
 
 const faqData = [
   {

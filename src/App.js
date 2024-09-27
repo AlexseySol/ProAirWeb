@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import GlobalStyle from './styles/GlobalStyles';
@@ -10,7 +11,9 @@ import ResultsSection from './components/ResultsSection';
 import OfferSection from './components/OfferSection';
 import FAQSection from './components/FAQSection';
 import ReviewsSection from './components/ReviewsSection';
-
+import Footer from './components/Footer';
+import PaymentResult from './components/pages/PaymentResult';
+import PaymentWaiting from './components/pages/PaymentWaiting';
 
 const AppContainer = styled(motion.div)`
   width: 100%;
@@ -108,7 +111,7 @@ const App = () => {
   }, []);
 
   return (
-    <>
+    <Router>
       <GlobalStyle />
       <ParticlesCanvas ref={canvasRef} />
       <AppContainer
@@ -116,19 +119,25 @@ const App = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 0.5 }}
       >
-       
-        <MainContent>
-          <Section id="HeroSection"><HeroSection /></Section>
-          <Section id="ForWhomSection"><ForWhomSection /></Section>
-          <Section id="AuthorSection"><AuthorSection /></Section>
-          <Section id="CourseContentSection"><CourseContentSection /></Section>
-          <Section id="ReviewsSection"><ReviewsSection /></Section>
-          <Section id="ResultsSection"><ResultsSection /></Section>
-          <Section id="OfferSection"><OfferSection /></Section>
-          <Section id="FAQSection"><FAQSection /></Section>
-        </MainContent>
+        <Routes>
+          <Route path="/" element={
+            <MainContent>
+              <Section id="HeroSection"><HeroSection /></Section>
+              <Section id="ForWhomSection"><ForWhomSection /></Section>
+              <Section id="AuthorSection"><AuthorSection /></Section>
+              <Section id="CourseContentSection"><CourseContentSection /></Section>
+              <Section id="ReviewsSection"><ReviewsSection /></Section>
+              <Section id="ResultsSection"><ResultsSection /></Section>
+              <Section id="OfferSection"><OfferSection /></Section>
+              <Section id="FAQSection"><FAQSection /></Section>
+              <Footer />
+            </MainContent>
+          } />
+          <Route path="/payment-result" element={<PaymentResult />} />
+          <Route path="/payment-waiting" element={<PaymentWaiting />} />
+        </Routes>
       </AppContainer>
-    </>
+    </Router>
   );
 };
 

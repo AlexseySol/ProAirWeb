@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import Countdown from 'react-countdown';
 import EnrollmentForm from './EnrollmentForm';
-import PaymentResult from '../fondy/PaymentResult';
 import {
   ModalOverlay,
   ModalContent,
@@ -38,6 +37,7 @@ const ExpiredTimerContainer = styled(TimerContainer)`
 const CourseEnrollModal = ({ isOpen, onClose }) => {
   const initialEndTime = useMemo(() => Date.now() + 5 * 60 * 1000, []);
 
+  // Здесь устанавливается начальная цена
   const [price, setPrice] = useState(29);
   const [endTime, setEndTime] = useState(initialEndTime);
   const [isTimerExpired, setIsTimerExpired] = useState(false);
@@ -47,7 +47,8 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
     setEndTime(initialEndTime);
     setIsTimerExpired(false);
-    setPrice(29);
+    // Здесь сбрасывается цена при открытии модального окна
+    setPrice(2);
 
     const urlParams = new URLSearchParams(window.location.search);
     const orderId = urlParams.get('order_id');
@@ -58,6 +59,7 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
 
   useEffect(() => {
     if (isTimerExpired) {
+      // Здесь меняется цена после истечения таймера
       setPrice(109);
     }
 
@@ -100,6 +102,7 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
 
   const handleTimerComplete = () => {
     setIsTimerExpired(true);
+    // Здесь меняется цена после истечения таймера
     setPrice(109);
   };
 
@@ -110,7 +113,7 @@ const CourseEnrollModal = ({ isOpen, onClose }) => {
       <ModalContent onClick={e => e.stopPropagation()}>
         <CloseButton onClick={onClose}>&times;</CloseButton>
         {showPaymentResult ? (
-          <PaymentResult />
+          <div>Оплата успішна!</div>
         ) : (
           <ContentWrapper>
             <LeftColumn>

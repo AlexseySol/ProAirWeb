@@ -7,22 +7,28 @@
     "@chakra-ui/react": "^2.8.2",
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
-    "@googleapis/oauth2": "^1.0.7",
     "@notionhq/client": "^2.2.15",
-    "@paypal/react-paypal-js": "^8.5.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.7.5",
+    "axios": "^1.7.7",
+    "body-parser": "^1.20.3",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
     "dotenv": "^16.4.5",
+    "express": "^4.21.0",
     "framer-motion": "^11.3.30",
     "gsap": "^3.12.5",
+    "helmet": "^7.1.0",
     "lucide-react": "^0.419.0",
-    "nodemailer": "^6.9.14",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.15",
     "react": "^18.2.0",
+    "react-app-rewired": "^2.2.1",
     "react-countdown": "^2.3.6",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
     "react-slick": "^0.30.2",
@@ -34,16 +40,23 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "concurrently \"npm run server\" \"npm run client\"",
+    "client": "cross-env PORT=3000 react-scripts start",
+    "server": "cross-env PORT=5000 nodemon -r dotenv/config server.js",
+    "build": "react-scripts build && npm run build-server",
+    "build-server": "echo '#!/usr/bin/env node' > ./build/server.js && cat ./server.js >> ./build/server.js && chmod +x ./build/server.js",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "start:prod": "node -r dotenv/config ./build/server.js",
+    "heroku-postbuild": "npm run build"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3"
+  },
+  "proxy": "http://localhost:5000",
+  "engines": {
+    "node": "14.x"
   },
   "browserslist": {
     "production": [
