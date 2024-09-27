@@ -249,7 +249,7 @@ app.listen(PORT, () => {
   console.log(`[LOG] Сервер запущено на порту ${PORT}`);
 });
 
-
+  module.exports = app;
 
 
 
