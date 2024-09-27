@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 export const Form = styled.form`
@@ -89,6 +90,39 @@ const EnrollmentForm = ({ price, onClose }) => {
   });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const transactionStatus = searchParams.get('transactionStatus');
+    const orderReference = searchParams.get('orderReference');
+
+    if (transactionStatus && orderReference) {
+      handlePaymentCompletion(transactionStatus, orderReference);
+    }
+  }, [location]);
+
+  const handlePaymentCompletion = async (transactionStatus, orderReference) => {
+    const savedFormData = localStorage.getItem('enrollmentFormData');
+    
+    if (savedFormData) {
+      const formDataToSend = JSON.parse(savedFormData);
+      try {
+        await axios.post('/api/send-telegram-notification', {
+          ...formDataToSend,
+          paymentStatus: transactionStatus,
+          orderReference,
+          price
+        });
+        localStorage.removeItem('enrollmentFormData');
+        // Здесь можно добавить логику для отображения результата оплаты пользователю
+        navigate('/payment-result', { state: { status: transactionStatus } });
+      } catch (error) {
+        console.error('Ошибка при отправке уведомления:', error);
+      }
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -123,7 +157,8 @@ const EnrollmentForm = ({ price, onClose }) => {
     if (validateForm()) {
       setIsSubmitting(true);
       try {
-        // Здесь цена отправляется на сервер вместе с другими данными формы
+        localStorage.setItem('enrollmentFormData', JSON.stringify(formData));
+
         const response = await axios.post('/api/initialize-payment', {
           ...formData,
           price,
