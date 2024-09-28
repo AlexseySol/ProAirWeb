@@ -2,8 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "server.js",
+      "src": "package.json",
       "use": "@vercel/node"
+    },
+    {
+      "src": "build/**",
+      "use": "@vercel/static"
     }
   ],
   "routes": [
@@ -12,11 +16,12 @@
       "dest": "server.js"
     },
     {
-      "src": "/(.*)",
-      "dest": "server.js",
-      "headers": {
-        "Content-Security-Policy": "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
-      }
+      "src": "^/static/(.*)",
+      "dest": "/build/static/$1"
+    },
+    {
+      "src": ".*",
+      "dest": "/build/index.html"
     }
   ]
 }
