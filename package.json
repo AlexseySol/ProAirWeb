@@ -1,3 +1,6 @@
+
+
+
 {
   "name": "proviz_web",
   "version": "0.1.0",
@@ -24,8 +27,6 @@
     "multer": "^1.4.5-lts.1",
     "nodemailer": "^6.9.15",
     "react": "^18.2.0",
-    "react-app-rewired": "^2.2.1",
-    "react-countdown": "^2.3.6",
     "react-dom": "^18.2.0",
     "react-icons": "^5.2.1",
     "react-modal": "^3.16.1",
@@ -40,23 +41,20 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "concurrently \"npm run server\" \"npm run client\"",
-    "client": "cross-env PORT=3000 react-scripts start",
-    "server": "cross-env PORT=5000 nodemon -r dotenv/config server.js",
-    "build": "react-scripts build && npm run build-server",
-    "build-server": "echo '#!/usr/bin/env node' > ./build/server.js && cat ./server.js >> ./build/server.js && chmod +x ./build/server.js",
+    "start": "node server.js",
+    "start:dev": "concurrently \"npm run server:dev\" \"npm run client\"",
+    "client": "react-scripts start",
+    "server:dev": "nodemon server.js",
+    "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "start:prod": "node -r dotenv/config ./build/server.js",
-    "heroku-postbuild": "npm run build"
+    "eject": "react-scripts eject"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "cross-env": "^7.0.3"
+    "nodemon": "^2.0.22"
   },
-  "proxy": "http://localhost:5000",
   "engines": {
-  "node": "20.x"
+    "node": "20.x"
   },
   "browserslist": {
     "production": [

@@ -485,7 +485,7 @@ app.listen(PORT, () => {
 
 
 
- require('dotenv').config();
+require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
 const cors = require('cors');
@@ -497,15 +497,12 @@ const { sendTelegramMessage } = require('./src/components/integration/integratio
 
 const app = express();
 
-// Middleware для логирования
+// Middleware
 app.use((req, res, next) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-  console.log('Headers:', req.headers);
-  console.log('Body:', req.body);
   next();
 });
 
-// Настройка CORS
 const corsOptions = {
   origin: process.env.REACT_APP_FRONTEND_URL || 'https://proair.website',
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -518,10 +515,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'build')));
 
-// Настройка multer для обработки multipart/form-data
 const upload = multer();
 
-// Настройка Helmet
 app.use(
   helmet({
     contentSecurityPolicy: {
@@ -537,36 +532,26 @@ app.use(
   })
 );
 
-// Утилиты
+// Utils
 const generateSignature = (data, secret) => {
-  const hmac = crypto.createHmac('md5', secret);
-  hmac.update(data);
-  return hmac.digest('hex');
+  return crypto.createHmac('md5', secret).update(data).digest('hex');
 };
 
-// Хранилище для данных формы
+// Data storage
 const formDataStore = new Map();
 
-// Роуты
+// Routes
 app.post('/api/initialize-payment', async (req, res) => {
   try {
     const { price, name, email, phone, company, position } = req.body;
-    console.log('[LOG] Отримано запит на ініціалізацію платежу:', { price, name, email, phone, company, position });
-
     if (!price || !name || !email || !phone) {
-      console.error('[ERROR] Відсутні обов\'язкові параметри для ініціалізації платежу');
-      return res.status(400).json({ error: 'Відсутні обов\'язкові параметри' });
+      return res.status(400).json({ error: 'Missing required parameters' });
     }
 
     const orderReference = `ORDER_${Date.now()}`;
     const orderDate = Math.floor(Date.now() / 1000);
-
     const productName = "Курс навчання";
     const productCount = 1;
-
-    if (name.length < 2) {
-      throw new Error("Ім'я клієнта повинно мати мінімум 2 символи.");
-    }
 
     const signString = `${process.env.WAYFORPAY_MERCHANT_ACCOUNT};${req.headers.origin};${orderReference};${orderDate};${price};UAH;${productName};${productCount};${price}`;
     const merchantSignature = generateSignature(signString, process.env.WAYFORPAY_SECRET_KEY);
@@ -594,22 +579,15 @@ app.post('/api/initialize-payment', async (req, res) => {
 
     formDataStore.set(orderReference, { name, email, phone, company, position, price, status: 'pending' });
 
-    console.log('[LOG] Сформовані дані для оплати:', paymentData);
     res.json(paymentData);
   } catch (error) {
-    console.error('[ERROR] Помилка при ініціалізації платежу:', error);
-    console.error('[ERROR] Stack trace:', error.stack);
-    res.status(500).json({ 
-      error: 'Внутрішня помилка сервера', 
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
-    });
+    console.error('[ERROR] Payment initialization error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 app.post('/api/wayforpay-callback', async (req, res) => {
   try {
-    console.log('[LOG] Отримано callback від WayForPay:', req.body);
     const {
       merchantAccount,
       orderReference,
@@ -623,26 +601,20 @@ app.post('/api/wayforpay-callback', async (req, res) => {
     } = req.body;
 
     if (!merchantAccount || !orderReference || !amount || !currency || !transactionStatus || !merchantSignature) {
-      console.error('[ERROR] Відсутні обов\'язкові параметри в callback від WayForPay');
-      return res.status(400).json({ error: 'Відсутні обов\'язкові параметри' });
+      return res.status(400).json({ error: 'Missing required parameters' });
     }
 
     const signString = `${merchantAccount};${orderReference};${amount};${currency};${authCode};${cardPan};${transactionStatus};${reasonCode}`;
     const expectedSignature = generateSignature(signString, process.env.WAYFORPAY_SECRET_KEY);
 
     if (merchantSignature !== expectedSignature) {
-      console.error('[ERROR] Невірний підпис у callback');
-      return res.status(400).json({ error: 'Невірний підпис' });
+      return res.status(400).json({ error: 'Invalid signature' });
     }
-
-    console.log('[LOG] Статус транзакції:', transactionStatus);
 
     const formData = formDataStore.get(orderReference);
     if (formData) {
       formData.status = transactionStatus === 'Approved' ? 'completed' : 'failed';
       formDataStore.set(orderReference, formData);
-    } else {
-      console.warn(`[WARN] Дані форми не знайдено для замовлення ${orderReference}`);
     }
 
     const statusIcon = transactionStatus === 'Approved' ? '✅' : '❌';
@@ -669,30 +641,19 @@ ${authCode ? `Код авторизації: ${authCode}` : ''}
     const responseSignString = `${orderReference};accept;${Math.floor(Date.now() / 1000)}`;
     const responseSignature = generateSignature(responseSignString, process.env.WAYFORPAY_SECRET_KEY);
 
-    const response = {
+    res.json({
       orderReference: orderReference,
       status: 'accept',
       time: Math.floor(Date.now() / 1000),
       signature: responseSignature,
-    };
-
-    console.log('[LOG] Відправка відповіді на callback:', response);
-    res.json(response);
-  } catch (error) {
-    console.error('[ERROR] Помилка при обробці callback від WayForPay:', error);
-    console.error('[ERROR] Stack trace:', error.stack);
-    res.status(500).json({ 
-      error: 'Внутрішня помилка сервера', 
-      details: error.message,
-      stack: process.env.NODE_ENV === 'development' ? error.stack : undefined
     });
+  } catch (error) {
+    console.error('[ERROR] WayForPay callback processing error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 
 app.post('/api/payment-result', upload.none(), (req, res) => {
-  console.log('[LOG] Отримано POST-запит з результатом платежу');
-  console.log('[LOG] Тіло запиту:', req.body);
-  
   const { orderReference, transactionStatus, reasonCode } = req.body;
 
   const formData = formDataStore.get(orderReference);
@@ -721,24 +682,15 @@ ${reasonCode ? `Код причини: ${reasonCode}` : ''}
   sendTelegramMessage(telegramMessage);
 
   const redirectUrl = `${process.env.REACT_APP_FRONTEND_URL || 'https://proair.website'}/payment-result?orderReference=${orderReference || ''}&transactionStatus=${transactionStatus || ''}&reasonCode=${reasonCode || ''}`;
-  
-  console.log('[LOG] Перенаправлення на:', redirectUrl);
   res.redirect(303, redirectUrl);
 });
 
 app.get('/api/payment-result', (req, res) => {
-  console.log('[LOG] Отримано GET-запит з результатом платежу');
-  console.log('[LOG] Параметри запиту:', req.query);
-  
   const { orderReference, transactionStatus, reasonCode } = req.query;
-
   const redirectUrl = `${process.env.REACT_APP_FRONTEND_URL || 'https://proair.website'}/payment-result?orderReference=${orderReference || ''}&transactionStatus=${transactionStatus || ''}&reasonCode=${reasonCode || ''}`;
-  
-  console.log('[LOG] Перенаправлення на:', redirectUrl);
   res.redirect(303, redirectUrl);
 });
 
-// Тестовый эндпоинт
 app.get('/api/test', (req, res) => {
   res.json({ 
     message: 'Server is working', 
@@ -753,7 +705,7 @@ app.get('*', (req, res) => {
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`[LOG] Сервер запущено на порту ${PORT}`);
+  console.log(`[LOG] Server started on port ${PORT}`);
 });
 
-module.exports = app; 
+module.exports = app;
