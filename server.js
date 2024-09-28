@@ -484,7 +484,6 @@ app.listen(PORT, () => {
 
 
 
-
 require('dotenv').config();
 const express = require('express');
 const crypto = require('crypto');
@@ -513,6 +512,8 @@ app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Serve static files from the React app
 app.use(express.static(path.join(__dirname, 'build')));
 
 const upload = multer();
@@ -527,6 +528,7 @@ app.use(
         frameSrc: ["'self'", "https://secure.wayforpay.com"],
         imgSrc: ["'self'", "data:", "https:"],
         styleSrc: ["'self'", "'unsafe-inline'"],
+        fontSrc: ["'self'", "https://fonts.gstatic.com"],
       },
     },
   })
@@ -699,6 +701,8 @@ app.get('/api/test', (req, res) => {
   });
 });
 
+// The "catchall" handler: for any request that doesn't
+// match one above, send back React's index.html file.
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
